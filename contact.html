@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>World Cuisine | Contact</title>
+
+    <!--
+    Team: Toretay Ali, Kassym Mansur, Mukhametsharip Aibyn
+    Group: SE-2504
+    Assigned page: Mukhametsharip Aibyn
+    -->
+
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+<header id="main-header">
+
+    <nav class="navbar">
+
+        <a href="index.html" class="logo">
+            World Cuisine
+        </a>
+
+        <ul class="nav-menu">
+
+            <li><a href="index.html">Home</a></li>
+
+            <li>
+                <a href="countries.html">
+                    Countries
+                </a>
+            </li>
+
+            <li>
+                <a href="dishes.html">
+                    Dishes
+                </a>
+            </li>
+
+            <li>
+                <a href="recipes.html">
+                    Recipes
+                </a>
+            </li>
+
+            <li>
+                <a href="restaurants.html">
+                    Restaurants
+                </a>
+            </li>
+
+            <li>
+                <a href="contact.html" class="active">
+                    Contact
+                </a>
+            </li>
+
+        </ul>
+
+    </nav>
+
+</header>
+
+
+<main>
+
+    <section class="page-hero">
+
+        <div class="container">
+
+            <p class="eyebrow">
+                CONTACT
+            </p>
+
+            <h1>
+                Share your recommendation.
+            </h1>
+
+            <p>
+                Know a great dish or restaurant?
+                Tell our team about it.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <section class="section">
+
+        <div class="container contact-grid">
+
+
+            <div class="contact-info">
+
+                <img
+                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQVsRAcZTshVtKbZCZrdrQxnJyPozDyrob95-2w2Rg2HiV7PIfZam5cV1I&s=10"
+                    alt="Selection of world cuisine dishes"
+                >
+
+                <h2>
+                    What should we try next?
+                </h2>
+
+                <p>
+                    Share a cuisine, restaurant or dish
+                    you think should be added to our project.
+                </p>
+
+            </div>
+
+
+            <form
+                id="contact-form"
+                action="mailto:example@example.com"
+                method="post"
+                enctype="text/plain"
+            >
+
+
+                <div class="form-group">
+
+                    <label for="name">
+                        Name *
+                    </label>
+
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        placeholder="Your name"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="email">
+                        Email *
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="name@example.com"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="cuisine">
+                        Cuisine *
+                    </label>
+
+                    <select
+                        id="cuisine"
+                        name="cuisine"
+                        required
+                    >
+
+                        <option value="">
+                            Choose cuisine
+                        </option>
+
+                        <option value="Kazakh">
+                            Kazakh
+                        </option>
+
+                        <option value="Italian">
+                            Italian
+                        </option>
+
+                        <option value="Japanese">
+                            Japanese
+                        </option>
+
+                        <option value="Korean">
+                            Korean
+                        </option>
+
+                        <option value="Indian">
+                            Indian
+                        </option>
+
+                        <option value="Mexican">
+                            Mexican
+                        </option>
+
+                        <option value="Other">
+                            Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="restaurant">
+                        Dish or restaurant
+                    </label>
+
+                    <input
+                        type="text"
+                        id="restaurant"
+                        name="restaurant"
+                        placeholder="Example: Sushi"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="message">
+                        Message *
+                    </label>
+
+                    <textarea
+                        id="message"
+                        name="message"
+                        rows="6"
+                        placeholder="Tell us about your recommendation..."
+                        required
+                    ></textarea>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="button"
+                >
+                    Send recommendation
+                </button>
+
+            </form>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer>
+
+    <div class="container">
+
+        <p>
+            Team: Toretay Ali, Kassym Mansur, Mukhametsharip Aibyn
+        </p>
+
+        <p>
+            SE-2504 | World Cuisine | Front-End Assignment 1
+        </p>
+
+    </div>
+
+</footer>
+
+</body>
+</html>
