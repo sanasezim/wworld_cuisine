@@ -1,3 +1,9 @@
+/* =================================
+   WORLD CUISINE — ASSIGNMENT 2
+   ================================= */
+
+
+/* ---------- BASE ---------- */
 
 * {
     margin: 0;
@@ -5,60 +11,51 @@
     box-sizing: border-box;
 }
 
-
 html {
     scroll-behavior: smooth;
 }
 
-
 body {
     font-family: Arial, Helvetica, sans-serif;
-    background-color: #f7f7f4;
+    background: #f7f7f4;
     color: #20211f;
     line-height: 1.6;
 }
 
-
-h1,
-h2,
-h3 {
-    line-height: 1.15;
+.container {
+    width: 90%;
+    max-width: 1050px;
+    margin: auto;
 }
-
-
-h1 {
-    font-size: 4.8rem;
-    letter-spacing: -4px;
-}
-
-
-h2 {
-    font-size: 2.5rem;
-    letter-spacing: -2px;
-}
-
-
-h3 {
-    font-size: 1.25rem;
-}
-
-
-p {
-    color: #666760;
-}
-
-
-a {
-    text-decoration: none;
-    color: inherit;
-}
-
 
 img {
     display: block;
     max-width: 100%;
 }
 
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+h1 {
+    font-size: 3rem;
+    line-height: 1.1;
+    margin-bottom: 15px;
+}
+
+h2 {
+    font-size: 1.9rem;
+    margin-bottom: 12px;
+}
+
+h3 {
+    margin-bottom: 8px;
+}
+
+p {
+    color: #686862;
+}
 
 ul,
 ol {
@@ -66,907 +63,730 @@ ol {
 }
 
 
-/* GLOBAL */
+/* ---------- SMALL TEXT ---------- */
 
-.container {
-    width: 90%;
-    max-width: 1150px;
-    margin: 0 auto;
+.eyebrow {
+    margin-bottom: 8px;
+
+    color: #a55842;
+
+    font-size: 0.75rem;
+    font-weight: bold;
+
+    letter-spacing: 1.5px;
+}
+
+.tag {
+    display: inline-block;
+
+    margin-bottom: 10px;
+
+    padding: 5px 10px;
+
+    background: #eee1db;
+    color: #9d4f38;
+
+    border-radius: 20px;
+
+    font-size: 0.75rem;
+    font-weight: bold;
 }
 
 
-/* HEADER - ID SELECTOR */
+/* =================================
+   TASK 1 — FLEXBOX NAVIGATION
+   ================================= */
 
 #main-header {
     position: sticky;
     top: 0;
+
     z-index: 100;
 
-    background-color: rgba(247, 247, 244, 0.96);
+    background: #f7f7f4;
+
     border-bottom: 1px solid #ddddda;
 }
 
-
 .navbar {
     width: 90%;
-    max-width: 1150px;
+    max-width: 1050px;
 
-    min-height: 74px;
+    min-height: 68px;
 
-    margin: 0 auto;
+    margin: auto;
 
     display: flex;
-    align-items: center;
-    justify-content: space-between;
 
-    gap: 30px;
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 25px;
 }
 
-
 .logo {
-    font-size: 1.1rem;
-    font-weight: 800;
+    font-weight: bold;
+
     white-space: nowrap;
 }
 
-
 .logo::before {
     content: "●";
-    color: #c55b3d;
-    margin-right: 8px;
+
+    color: #a55842;
+
+    margin-right: 7px;
 }
-
-
-/* DESCENDANT SELECTOR */
 
 .nav-menu {
     list-style: none;
+
     padding: 0;
 
     display: flex;
-    gap: 5px;
-}
-
-
-.nav-menu a {
-    display: block;
-
-    padding: 9px 13px;
-
-    border-radius: 50px;
-
-    color: #666760;
-
-    font-size: 0.9rem;
-
-    transition: 0.2s;
-}
-
-
-.nav-menu a:hover {
-    background-color: #e5e5e0;
-    color: #20211f;
-}
-
-
-.nav-menu a.active {
-    background-color: #20211f;
-    color: white;
-}
-
-
-/* EYEBROW */
-
-.eyebrow {
-    margin-bottom: 12px;
-
-    color: #c55b3d;
-
-    font-size: 0.75rem;
-
-    font-weight: bold;
-
-    letter-spacing: 2px;
-}
-
-
-/* HERO */
-
-.hero {
-    padding: 70px 0;
-}
-
-
-.hero-layout {
-    min-height: 550px;
-
-    display: grid;
-
-    grid-template-columns: 1fr 1fr;
 
     align-items: center;
 
-    gap: 70px;
-}
-
-
-.hero-text h1 span {
-    display: block;
-    color: #c55b3d;
-}
-
-
-.hero-description {
-    max-width: 570px;
-
-    margin-top: 25px;
-
-    font-size: 1.05rem;
-}
-
-
-.hero-buttons {
-    margin-top: 30px;
-
-    display: flex;
-
-    gap: 10px;
+    gap: 5px;
 
     flex-wrap: wrap;
 }
 
+.nav-menu a {
+    display: block;
 
-.hero-image {
-    width: 100%;
-    height: 500px;
-
-    object-fit: cover;
+    padding: 7px 11px;
 
     border-radius: 20px;
+
+    color: #65655f;
+
+    font-size: 0.88rem;
 }
 
-
-/* BUTTON */
-
-.button {
-    display: inline-block;
-
-    padding: 12px 20px;
-
-    border: 1px solid #20211f;
-
-    border-radius: 50px;
-
-    background-color: #20211f;
-
-    color: white;
-
-    font-size: 0.9rem;
-
-    font-weight: bold;
-
-    cursor: pointer;
-
-    transition: 0.2s;
-}
-
-
-.button:hover {
-    background-color: #c55b3d;
-
-    border-color: #c55b3d;
-
-    transform: translateY(-2px);
-}
-
-
-.button-light {
-    background-color: transparent;
-
-    color: #20211f;
-}
-
-
-.button-light:hover {
+.nav-menu a:hover,
+.nav-menu a.active {
+    background: #20211f;
     color: white;
 }
 
 
-/* SECTIONS */
+/* ---------- PAGE ---------- */
 
-.section {
-    padding: 80px 0;
+.section,
+.page-hero {
+    padding: 60px 0;
 }
-
-
-.section-gray {
-    background-color: #eaeae5;
-}
-
-
-.section-title {
-    margin-bottom: 35px;
-}
-
-
-/* PAGE HERO */
 
 .page-hero {
-    padding: 90px 0 60px;
-
     border-bottom: 1px solid #ddddda;
 }
 
-
-.page-hero h1 {
-    max-width: 800px;
-}
-
-
 .page-hero p:last-child {
     max-width: 600px;
+}
 
-    margin-top: 20px;
+.section-light {
+    background: #ecece7;
+}
 
-    font-size: 1.05rem;
+.section-heading {
+    max-width: 600px;
+
+    margin-bottom: 30px;
 }
 
 
-/* CARDS - CLASS SELECTOR */
+/* =================================
+   FLEXBOX CARDS
+   ================================= */
 
-.cards {
-    display: grid;
+.card-row {
+    display: flex;
 
-    grid-template-columns: repeat(3, 1fr);
+    align-items: stretch;
 
-    gap: 18px;
+    gap: 16px;
+
+    flex-wrap: wrap;
 }
-
 
 .card {
-    min-height: 270px;
+    flex: 1 1 30%;
 
-    padding: 25px;
+    min-width: 220px;
 
     display: flex;
+
     flex-direction: column;
 
-    background-color: white;
+    padding: 18px;
+
+    background: white;
 
     border: 1px solid #ddddda;
-
-    border-radius: 16px;
-
-    transition: 0.2s;
+    border-radius: 12px;
 }
 
+.card img {
+    height: 120px;
 
-.card:hover {
-    transform: translateY(-4px);
-
-    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.06);
-}
-
-
-.card h3 {
-    margin-bottom: 10px;
-}
-
-
-.card p {
-    margin-bottom: 15px;
-}
-
-
-.card ul {
-    margin-bottom: 15px;
-    color: #666760;
-}
-
-
-.card a {
-    margin-top: auto;
-
-    font-weight: bold;
-}
-
-
-.card a:hover {
-    color: #c55b3d;
-}
-
-
-.number {
-    margin-bottom: auto;
-
-    color: #c55b3d;
-
-    font-size: 0.8rem;
-
-    font-weight: bold;
-}
-
-
-.country {
-    width: 45px;
-    height: 45px;
-
-    margin-bottom: 25px;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    background-color: #efe1d9;
-
-    color: #a6462b;
-
-    border-radius: 50%;
-
-    font-size: 0.75rem;
-
-    font-weight: bold;
-}
-
-
-/* BANNER */
-
-.banner-image {
-    width: 100%;
-    height: 400px;
-
-    margin-top: 45px;
+    margin-bottom: 12px;
 
     object-fit: cover;
 
-    border-radius: 20px;
+    border-radius: 8px;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 8px 18px
+        rgba(0, 0, 0, 0.06);
 }
 
 
-.top-image {
-    margin-top: 0;
-    margin-bottom: 60px;
-}
+/* =================================
+   TASK 3 — GRID AREAS
+   ================================= */
 
-
-/* ABOUT */
-
-.about-grid {
+.guide-layout {
     display: grid;
 
-    grid-template-columns: 170px 1fr;
+    grid-template-columns:
+        190px 1fr;
 
-    gap: 35px;
+    grid-template-areas:
+        "header header"
+        "sidebar main"
+        "footer footer";
 
-    align-items: center;
+    gap: 14px;
+}
+
+.guide-header {
+    grid-area: header;
+}
+
+.guide-sidebar {
+    grid-area: sidebar;
+}
+
+.guide-main {
+    grid-area: main;
+}
+
+.guide-footer {
+    grid-area: footer;
+}
+
+.guide-header,
+.guide-sidebar,
+.guide-main,
+.guide-footer {
+    padding: 18px;
+
+    background: white;
+
+    border: 1px solid #ddddda;
+    border-radius: 10px;
 }
 
 
-.profile-img {
-    width: 170px;
+/* =================================
+   TASK 4 — IMAGE GALLERY
+   ================================= */
+
+.gallery {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 14px;
+}
+
+.gallery-item {
+    position: relative;
+
+    overflow: hidden;
+
+    background: white;
+
+    border-radius: 12px;
+}
+
+.gallery-item img {
+    width: 100%;
     height: 170px;
 
     object-fit: cover;
 
-    border-radius: 50%;
+    transition: 0.25s;
+}
 
-    border: 5px solid white;
+.gallery-item figcaption {
+    position: absolute;
+
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+
+    padding: 8px 10px;
+
+    background:
+        rgba(25, 25, 25, 0.78);
+
+    color: white;
+
+    border-radius: 7px;
+
+    font-size: 0.82rem;
+
+    opacity: 0;
+
+    transition: 0.25s;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.03);
+}
+
+.gallery-item:hover figcaption {
+    opacity: 1;
 }
 
 
-.about-grid h2 {
-    margin-bottom: 15px;
-}
-
-
-.about-grid p {
-    max-width: 650px;
-
-    margin-bottom: 8px;
-}
-
-
-/* FOOD */
-
-.food-grid {
-    display: grid;
-
-    grid-template-columns: repeat(3, 1fr);
-
-    gap: 18px;
-}
-
-
-.food-card {
-    overflow: hidden;
-
-    background-color: white;
-
-    border: 1px solid #ddddda;
-
-    border-radius: 16px;
-
-    transition: 0.2s;
-}
-
-
-.food-card:hover {
-    transform: translateY(-4px);
-}
-
-
-.food-card img {
-    width: 100%;
-    height: 230px;
-
-    object-fit: cover;
-}
-
-
-.food-content {
-    padding: 20px;
-}
-
-
-.food-content span {
-    color: #c55b3d;
-
-    font-size: 0.75rem;
-
-    font-weight: bold;
-
-    text-transform: uppercase;
-}
-
-
-.food-content h3 {
-    margin: 8px 0;
-}
-
-
-/* RECIPES */
+/* =================================
+   RECIPES — FLEXBOX
+   ================================= */
 
 .recipe-list {
     display: flex;
 
     flex-direction: column;
 
+    gap: 20px;
+}
+
+.recipe-card {
+    display: flex;
+
+    align-items: stretch;
+
     gap: 25px;
-}
 
+    padding: 18px;
 
-.recipe {
-    display: grid;
-
-    grid-template-columns: 0.8fr 1.2fr;
-
-    gap: 40px;
-
-    padding: 25px;
-
-    background-color: white;
+    background: white;
 
     border: 1px solid #ddddda;
-
-    border-radius: 18px;
+    border-radius: 14px;
 }
 
+.recipe-card > img {
+    width: 230px;
 
-.recipe img {
-    width: 100%;
-    height: 100%;
-
-    min-height: 400px;
+    min-height: 230px;
 
     object-fit: cover;
 
-    border-radius: 12px;
+    border-radius: 10px;
 }
 
-
-.recipe h2 {
-    margin-bottom: 25px;
+.recipe-content {
+    flex: 1;
 }
 
-
-.recipe h3 {
-    margin-top: 20px;
-    margin-bottom: 7px;
-}
-
-
-.recipe li {
-    margin-bottom: 4px;
-
-    color: #666760;
-}
-
-
-/* TABLE */
-
-.table-wrapper {
-    overflow-x: auto;
-
-    border: 1px solid #ddddda;
-
-    border-radius: 15px;
-}
-
-
-table {
-    width: 100%;
-
-    min-width: 700px;
-
-    border-collapse: collapse;
-
-    background-color: white;
-}
-
-
-/* DESCENDANT SELECTORS */
-
-table th {
-    padding: 16px;
-
-    background-color: #20211f;
-
-    color: white;
-
-    text-align: left;
-}
-
-
-table td {
-    padding: 16px;
-
-    border-bottom: 1px solid #eeeeea;
-}
-
-
-table tbody tr:hover {
-    background-color: #f3f3ef;
-}
-
-
-/* CONTACT */
-
-.contact-grid {
-    display: grid;
-
-    grid-template-columns: 0.8fr 1.2fr;
-
-    gap: 60px;
-
-    align-items: start;
-}
-
-
-.contact-info img {
-    width: 100%;
-    height: 280px;
-
-    object-fit: cover;
-
-    margin-bottom: 25px;
-
-    border-radius: 15px;
-}
-
-
-.contact-info h2 {
-    margin-bottom: 15px;
-}
-
-
-/* FORM - ID SELECTOR */
-
-#contact-form {
-    padding: 30px;
-
-    background-color: white;
-
-    border: 1px solid #ddddda;
-
-    border-radius: 18px;
-}
-
-
-.form-group {
+.recipe-content h2 {
     margin-bottom: 18px;
 }
 
+.recipe-columns {
+    display: flex;
 
-.form-group label {
-    display: block;
+    gap: 40px;
+}
+
+.recipe-columns > div {
+    flex: 1;
+}
+
+.recipe-columns h3 {
+    font-size: 0.95rem;
 
     margin-bottom: 7px;
+}
 
-    font-weight: bold;
+.recipe-columns li {
+    margin-bottom: 3px;
+
+    color: #686862;
 }
 
 
-input,
-select,
-textarea {
-    width: 100%;
+/* =================================
+   RESTAURANTS — FLEXBOX
+   ================================= */
 
-    padding: 12px 14px;
+.restaurant-list {
+    display: flex;
 
-    border: 1px solid #ccccca;
+    flex-wrap: wrap;
 
-    border-radius: 9px;
-
-    background-color: #fafaf8;
-
-    font: inherit;
-
-    outline: none;
+    gap: 15px;
 }
-
-
-textarea {
-    resize: vertical;
-}
-
-
-input:focus,
-select:focus,
-textarea:focus {
-    border-color: #c55b3d;
-
-    background-color: white;
-
-    box-shadow: 0 0 0 3px rgba(197, 91, 61, 0.12);
-}
-
-
-/* FOOTER */
-
-footer {
-    padding: 35px 0;
-
-    background-color: #20211f;
-
-    text-align: center;
-}
-
-
-footer p {
-    margin: 4px 0;
-
-    color: #aaaaa5;
-
-    font-size: 0.85rem;
-}
-
-
-/* RESPONSIVE */
-
-@media (max-width: 900px) {
-
-    h1 {
-        font-size: 3.4rem;
-    }
-
-
-    .navbar {
-        padding: 15px 0;
-
-        flex-direction: column;
-    }
-
-
-    .nav-menu {
-        width: 100%;
-
-        justify-content: center;
-
-        flex-wrap: wrap;
-    }
-
-
-    .hero-layout {
-        grid-template-columns: 1fr;
-
-        gap: 35px;
-    }
-
-
-    .hero-image {
-        height: 380px;
-    }
-
-
-    .cards,
-    .food-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-
-    .recipe,
-    .contact-grid {
-        grid-template-columns: 1fr;
-    }
-
-
-    .recipe img {
-        height: 350px;
-
-        min-height: 0;
-    }
-
-}
-
-
-@media (max-width: 600px) {
-
-    h1 {
-        font-size: 2.7rem;
-
-        letter-spacing: -2px;
-    }
-
-
-    h2 {
-        font-size: 2rem;
-    }
-
-
-    .section {
-        padding: 55px 0;
-    }
-
-
-    .page-hero {
-        padding: 60px 0 40px;
-    }
-
-
-    .cards,
-    .food-grid {
-        grid-template-columns: 1fr;
-    }
-
-
-    .hero-image {
-        height: 300px;
-    }
-
-
-    .banner-image {
-        height: 260px;
-    }
-
-
-    .about-grid {
-        grid-template-columns: 1fr;
-    }
-
-
-    .profile-img {
-        width: 130px;
-        height: 130px;
-    }
-
-
-    .food-card img {
-        height: 210px;
-    }
-
-
-    #contact-form {
-        padding: 20px;
-    }
-
-}
-
-/* REAL RESTAURANT CARDS */
-
-.restaurant-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 18px;
-}
-
 
 .restaurant-card {
-    min-height: 330px;
+    flex: 1 1 45%;
 
-    padding: 25px;
+    min-width: 280px;
 
     display: flex;
-    flex-direction: column;
 
-    background-color: white;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 20px;
+
+    background: white;
 
     border: 1px solid #ddddda;
-    border-radius: 16px;
+    border-radius: 12px;
 
     transition: 0.2s;
 }
 
-
 .restaurant-card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-3px);
 
-    box-shadow:
-        0 12px 25px
-        rgba(0, 0, 0, 0.06);
+    border-color: #bebeb8;
 }
 
+.restaurant-top {
+    flex: 1;
+}
 
-.restaurant-country {
-    width: fit-content;
+.restaurant-details {
+    flex: 1;
 
-    margin-bottom: 22px;
+    border-left: 1px solid #eeeeea;
 
-    padding: 6px 10px;
+    padding-left: 20px;
+}
 
-    background-color: #efe1d9;
+.restaurant-details p {
+    margin-bottom: 10px;
 
-    color: #a6462b;
+    font-size: 0.88rem;
+}
 
-    border-radius: 50px;
+.restaurant-details span {
+    display: block;
+
+    color: #20211f;
 
     font-size: 0.72rem;
 
     font-weight: bold;
 
     text-transform: uppercase;
-
-    letter-spacing: 1px;
 }
 
 
-.restaurant-card h3 {
-    margin-bottom: 12px;
+/* =================================
+   TABLE
+   ================================= */
 
-    font-size: 1.35rem;
+.table-wrapper {
+    overflow-x: auto;
+
+    border: 1px solid #ddddda;
+    border-radius: 10px;
+}
+
+table {
+    width: 100%;
+
+    border-collapse: collapse;
+
+    background: white;
+}
+
+th,
+td {
+    padding: 12px 14px;
+
+    text-align: left;
+
+    border-bottom:
+        1px solid #eeeeea;
+}
+
+th {
+    background: #20211f;
+
+    color: white;
+
+    font-size: 0.85rem;
+}
+
+td {
+    color: #62625d;
+}
+
+tbody tr:hover {
+    background: #f5f5f1;
 }
 
 
-.restaurant-card > p {
-    margin-bottom: 20px;
+/* =================================
+   CONTACT
+   ================================= */
+
+.contact-row {
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 40px;
+}
+
+.contact-info,
+#contact-form {
+    flex: 1;
+}
+
+.contact-info img {
+    max-height: 230px;
+
+    object-fit: cover;
+
+    border-radius: 12px;
+
+    margin-bottom: 18px;
+}
+
+#contact-form {
+    padding: 22px;
+
+    background: white;
+
+    border: 1px solid #ddddda;
+    border-radius: 12px;
+}
+
+.form-group {
+    margin-bottom: 14px;
+}
+
+.form-group label {
+    display: block;
+
+    margin-bottom: 5px;
+
+    font-weight: bold;
+
+    font-size: 0.88rem;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+
+    padding: 10px;
+
+    border: 1px solid #ccccC7;
+    border-radius: 7px;
+
+    font: inherit;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+
+    border-color: #a55842;
 }
 
 
-.restaurant-info {
-    margin-top: auto;
+/* ---------- BUTTON ---------- */
 
-    padding-top: 17px;
+.button,
+.small-button {
+    display: inline-block;
 
-    border-top: 1px solid #eeeeea;
+    margin-top: 14px;
+
+    padding: 9px 16px;
+
+    border: none;
+    border-radius: 20px;
+
+    background: #20211f;
+    color: white;
+
+    cursor: pointer;
+}
+
+.button:hover,
+.small-button:hover {
+    background: #a55842;
 }
 
 
-.restaurant-info p {
-    margin-bottom: 6px;
+/* ---------- FOOTER ---------- */
 
-    font-size: 0.9rem;
+.site-footer {
+    padding: 24px 0;
+
+    background: #20211f;
+}
+
+.footer-row {
+    display: flex;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    flex-wrap: wrap;
+}
+
+.site-footer p {
+    color: #ccccC6;
+
+    font-size: 0.84rem;
 }
 
 
-.restaurant-info strong {
-    color: #20211f;
-}
+/* =================================
+   RESPONSIVE
+   ================================= */
+
+@media (max-width: 800px) {
+
+    h1 {
+        font-size: 2.5rem;
+    }
+
+    .navbar {
+        padding: 14px 0;
+
+        flex-direction: column;
+    }
+
+    .nav-menu {
+        justify-content: center;
+    }
 
 
-@media (max-width: 900px) {
+    /* GRID AREAS */
 
-    .restaurant-grid {
+    .guide-layout {
+        grid-template-columns: 1fr;
+
+        grid-template-areas:
+            "header"
+            "sidebar"
+            "main"
+            "footer";
+    }
+
+
+    /* GALLERY */
+
+    .gallery {
         grid-template-columns:
             repeat(2, 1fr);
+    }
+
+
+    /* RECIPES */
+
+    .recipe-card {
+        flex-direction: column;
+    }
+
+    .recipe-card > img {
+        width: 100%;
+        height: 220px;
+
+        min-height: 0;
+    }
+
+
+    /* RESTAURANTS */
+
+    .restaurant-card {
+        flex-basis: 100%;
+    }
+
+
+    /* CONTACT */
+
+    .contact-row {
+        flex-direction: column;
     }
 
 }
 
 
-@media (max-width: 600px) {
+@media (max-width: 520px) {
 
-    .restaurant-grid {
+    h1 {
+        font-size: 2.1rem;
+    }
+
+    h2 {
+        font-size: 1.6rem;
+    }
+
+    .section,
+    .page-hero {
+        padding: 45px 0;
+    }
+
+
+    /* GALLERY */
+
+    .gallery {
         grid-template-columns: 1fr;
+    }
+
+    .gallery-item img {
+        height: 190px;
+    }
+
+
+    /* RECIPES */
+
+    .recipe-columns {
+        flex-direction: column;
+
+        gap: 15px;
+    }
+
+
+    /* RESTAURANTS */
+
+    .restaurant-card {
+        flex-direction: column;
+    }
+
+    .restaurant-details {
+        padding-left: 0;
+
+        padding-top: 15px;
+
+        border-left: 0;
+
+        border-top:
+            1px solid #eeeeea;
     }
 
 }
