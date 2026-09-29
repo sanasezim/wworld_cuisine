@@ -3,7 +3,11 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>World Cuisine | Dishes</title>
 
@@ -13,38 +17,134 @@
     Assigned page: Kassym Mansur
     -->
 
-    <link rel="stylesheet" href="css/style.css">
+    <!-- Bootstrap CSS -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- Custom CSS -->
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
 </head>
+
 
 <body>
 
-<header id="main-header">
 
-    <nav class="navbar">
+<!-- ========================================
+     NAVBAR
+     ======================================== -->
 
-        <a href="index.html" class="logo">
+<nav class="navbar navbar-expand-lg navbar-dark world-navbar sticky-top">
+
+    <div class="container">
+
+        <a
+            class="navbar-brand"
+            href="index.html"
+        >
             World Cuisine
         </a>
 
-        <ul class="nav-menu">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="countries.html">Countries</a></li>
-            <li><a href="dishes.html" class="active">Dishes</a></li>
-            <li><a href="recipes.html">Recipes</a></li>
-            <li><a href="restaurants.html">Restaurants</a></li>
-            <li><a href="contact.html">Contact</a></li>
-        </ul>
 
-    </nav>
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#mainNavbar"
+            aria-controls="mainNavbar"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-</header>
 
+        <div
+            class="collapse navbar-collapse"
+            id="mainNavbar"
+        >
+
+            <ul class="navbar-nav ms-auto">
+
+                <li class="nav-item">
+                    <a
+                        class="nav-link"
+                        href="index.html"
+                    >
+                        Home
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a
+                        class="nav-link"
+                        href="countries.html"
+                    >
+                        Countries
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a
+                        class="nav-link active"
+                        href="dishes.html"
+                    >
+                        Dishes
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a
+                        class="nav-link"
+                        href="recipes.html"
+                    >
+                        Recipes
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a
+                        class="nav-link"
+                        href="restaurants.html"
+                    >
+                        Restaurants
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a
+                        class="nav-link"
+                        href="contact.html"
+                    >
+                        Contact
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</nav>
+
+
+<!-- ========================================
+     MAIN
+     ======================================== -->
 
 <main>
 
+
+    <!-- PAGE HERO -->
+
     <section class="page-hero">
 
-        <div class="container">
+        <div class="container text-center">
 
             <p class="eyebrow">
                 WORLD FOOD
@@ -54,7 +154,7 @@
                 Famous dishes
             </h1>
 
-            <p>
+            <p class="hero-description mx-auto">
                 Explore popular dishes from different
                 cuisines around the world.
             </p>
@@ -64,24 +164,37 @@
     </section>
 
 
+
+    <!-- ========================================
+         IMAGE GALLERY
+         ======================================== -->
+
     <section class="section">
 
         <div class="container">
 
-            <div class="section-heading">
+            <div class="section-heading text-center">
+
+                <p class="eyebrow">
+                    DISCOVER
+                </p>
 
                 <h2>
                     Image Gallery
                 </h2>
 
                 <p>
-                    Hover over an image to see the dish name.
+                    Hover over an image to see
+                    the dish name and country.
                 </p>
 
             </div>
 
 
             <div class="gallery">
+
+
+                <!-- 1. BESHBARMAK -->
 
                 <figure class="gallery-item">
 
@@ -91,11 +204,15 @@
                     >
 
                     <figcaption>
-                        Beshbarmak · Kazakhstan
+                        <strong>Beshbarmak</strong>
+                        <span>Kazakhstan</span>
                     </figcaption>
 
                 </figure>
 
+
+
+                <!-- 2. PIZZA -->
 
                 <figure class="gallery-item">
 
@@ -105,11 +222,15 @@
                     >
 
                     <figcaption>
-                        Pizza · Italy
+                        <strong>Pizza</strong>
+                        <span>Italy</span>
                     </figcaption>
 
                 </figure>
 
+
+
+                <!-- 3. SUSHI -->
 
                 <figure class="gallery-item">
 
@@ -119,11 +240,15 @@
                     >
 
                     <figcaption>
-                        Sushi · Japan
+                        <strong>Sushi</strong>
+                        <span>Japan</span>
                     </figcaption>
 
                 </figure>
 
+
+
+                <!-- 4. TACOS -->
 
                 <figure class="gallery-item">
 
@@ -133,11 +258,15 @@
                     >
 
                     <figcaption>
-                        Tacos · Mexico
+                        <strong>Tacos</strong>
+                        <span>Mexico</span>
                     </figcaption>
 
                 </figure>
 
+
+
+                <!-- 5. BIRYANI -->
 
                 <figure class="gallery-item">
 
@@ -147,11 +276,15 @@
                     >
 
                     <figcaption>
-                        Biryani · India
+                        <strong>Biryani</strong>
+                        <span>India</span>
                     </figcaption>
 
                 </figure>
 
+
+
+                <!-- 6. BIBIMBAP -->
 
                 <figure class="gallery-item">
 
@@ -161,11 +294,15 @@
                     >
 
                     <figcaption>
-                        Bibimbap · South Korea
+                        <strong>Bibimbap</strong>
+                        <span>South Korea</span>
                     </figcaption>
 
                 </figure>
 
+
+
+                <!-- 7. CROISSANT -->
 
                 <figure class="gallery-item">
 
@@ -175,11 +312,15 @@
                     >
 
                     <figcaption>
-                        Croissant · France
+                        <strong>Croissant</strong>
+                        <span>France</span>
                     </figcaption>
 
                 </figure>
 
+
+
+                <!-- 8. KEBAB -->
 
                 <figure class="gallery-item">
 
@@ -189,11 +330,15 @@
                     >
 
                     <figcaption>
-                        Kebab
+                        <strong>Kebab</strong>
+                        <span>Middle East</span>
                     </figcaption>
 
                 </figure>
 
+
+
+                <!-- 9. BAURSAK -->
 
                 <figure class="gallery-item">
 
@@ -203,10 +348,12 @@
                     >
 
                     <figcaption>
-                        Baursak · Kazakhstan
+                        <strong>Baursak</strong>
+                        <span>Kazakhstan</span>
                     </figcaption>
 
                 </figure>
+
 
             </div>
 
@@ -214,25 +361,438 @@
 
     </section>
 
+
+
+    <!-- ========================================
+         BOOTSTRAP CAROUSEL
+         9 IMAGES TOTAL
+         ======================================== -->
+
+    <section class="section section-light">
+
+        <div class="container">
+
+            <div class="section-heading text-center">
+
+                <p class="eyebrow">
+                    FEATURED
+                </p>
+
+                <h2>
+                    Famous Dishesgit add .
+                </h2>
+
+                <p>
+                    Use the controls to explore
+                    all nine dishes.
+                </p>
+
+            </div>
+
+
+            <div
+                id="dishCarousel"
+                class="carousel slide dish-carousel"
+            >
+
+
+                <!-- INDICATORS -->
+
+                <div class="carousel-indicators">
+
+                    <button
+                        type="button"
+                        data-bs-target="#dishCarousel"
+                        data-bs-slide-to="0"
+                        class="active"
+                        aria-current="true"
+                        aria-label="First group of dishes"
+                    ></button>
+
+                    <button
+                        type="button"
+                        data-bs-target="#dishCarousel"
+                        data-bs-slide-to="1"
+                        aria-label="Second group of dishes"
+                    ></button>
+
+                    <button
+                        type="button"
+                        data-bs-target="#dishCarousel"
+                        data-bs-slide-to="2"
+                        aria-label="Third group of dishes"
+                    ></button>
+
+                </div>
+
+
+                <div class="carousel-inner">
+
+
+                    <!-- SLIDE 1 -->
+
+                    <div class="carousel-item active">
+
+                        <div class="row g-4 carousel-dish-row">
+
+
+                            <div class="col-md-4">
+
+                                <article class="dish-card">
+
+                                    <img
+                                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyAl3miNOGMKY6arHZwxVIWGgDeRQHvpw-SgTEpD5Vcg18VDNYS9lNvy0&s=10"
+                                        alt="Kazakh beshbarmak"
+                                    >
+
+                                    <div class="dish-info">
+
+                                        <h3>
+                                            Beshbarmak
+                                        </h3>
+
+                                        <p>
+                                            Kazakhstan
+                                        </p>
+
+                                    </div>
+
+                                </article>
+
+                            </div>
+
+
+
+                            <div class="col-md-4">
+
+                                <article class="dish-card">
+
+                                    <img
+                                        src="https://assets.tmecosys.com/image/upload/t_web_rdp_recipe_584x480_1_5x/img/recipe/ras/Assets/48a49653c8716457eb0b2f7eb3c7d74c/Derivates/8d83d9ed4567fa15456d8eec7557e60006a15576.jpg"
+                                        alt="Italian pizza"
+                                    >
+
+                                    <div class="dish-info">
+
+                                        <h3>
+                                            Pizza
+                                        </h3>
+
+                                        <p>
+                                            Italy
+                                        </p>
+
+                                    </div>
+
+                                </article>
+
+                            </div>
+
+
+
+                            <div class="col-md-4">
+
+                                <article class="dish-card">
+
+                                    <img
+                                        src="https://sxodim.com/uploads/images/2023/01/25/optimized/f051bf63aa2ef268acad87b389497111_800xauto-q-85.jpg"
+                                        alt="Japanese sushi"
+                                    >
+
+                                    <div class="dish-info">
+
+                                        <h3>
+                                            Sushi
+                                        </h3>
+
+                                        <p>
+                                            Japan
+                                        </p>
+
+                                    </div>
+
+                                </article>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- SLIDE 2 -->
+
+                    <div class="carousel-item">
+
+                        <div class="row g-4 carousel-dish-row">
+
+
+                            <div class="col-md-4">
+
+                                <article class="dish-card">
+
+                                    <img
+                                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQuh92MiRfQoQ8m9FLQaQtKWZbGhscBKZCwJKDxHxelWU9Oq4RIRWE5RnQM&s=10"
+                                        alt="Mexican tacos"
+                                    >
+
+                                    <div class="dish-info">
+
+                                        <h3>
+                                            Tacos
+                                        </h3>
+
+                                        <p>
+                                            Mexico
+                                        </p>
+
+                                    </div>
+
+                                </article>
+
+                            </div>
+
+
+
+                            <div class="col-md-4">
+
+                                <article class="dish-card">
+
+                                    <img
+                                        src="https://www.recipetineats.com/tachyon/2018/08/Chicken-Biryani_1-1.jpg"
+                                        alt="Indian biryani"
+                                    >
+
+                                    <div class="dish-info">
+
+                                        <h3>
+                                            Biryani
+                                        </h3>
+
+                                        <p>
+                                            India
+                                        </p>
+
+                                    </div>
+
+                                </article>
+
+                            </div>
+
+
+
+                            <div class="col-md-4">
+
+                                <article class="dish-card">
+
+                                    <img
+                                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTE7UtkVFfiNKGsHsc7dsWanE11OB99Al81xUK5E4prf20bGLLnEie5f9o&s=10"
+                                        alt="Korean bibimbap"
+                                    >
+
+                                    <div class="dish-info">
+
+                                        <h3>
+                                            Bibimbap
+                                        </h3>
+
+                                        <p>
+                                            South Korea
+                                        </p>
+
+                                    </div>
+
+                                </article>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- SLIDE 3 -->
+
+                    <div class="carousel-item">
+
+                        <div class="row g-4 carousel-dish-row">
+
+
+                            <div class="col-md-4">
+
+                                <article class="dish-card">
+
+                                    <img
+                                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlFMsrtlXQoTV7BRbc50JKUA_KbMNN53vw852sExP3ZWXiSi0PvHHZgLA&s=10"
+                                        alt="French croissant"
+                                    >
+
+                                    <div class="dish-info">
+
+                                        <h3>
+                                            Croissant
+                                        </h3>
+
+                                        <p>
+                                            France
+                                        </p>
+
+                                    </div>
+
+                                </article>
+
+                            </div>
+
+
+
+                            <div class="col-md-4">
+
+                                <article class="dish-card">
+
+                                    <img
+                                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRV9Bnh4iB3WrusS4MkZSpXgmu5d4eQ9CeoZLaoIvR6B8MTCoqlFsnpFcU6&s=10"
+                                        alt="Kebab"
+                                    >
+
+                                    <div class="dish-info">
+
+                                        <h3>
+                                            Kebab
+                                        </h3>
+
+                                        <p>
+                                            Middle East
+                                        </p>
+
+                                    </div>
+
+                                </article>
+
+                            </div>
+
+
+
+                            <div class="col-md-4">
+
+                                <article class="dish-card">
+
+                                    <img
+                                        src="https://resizer.mail.ru/p/74a628a2-ba09-5b23-9842-ffbd2d7dbe36/AQAFNn2-17H_kfHIkG-nxXkna8SLMhczqtObmG--DkGVzLFtQw0D84Ua5Ne8ZszCwrwv6JRmf59PeUl4R8m5J516kVE.jpg"
+                                        alt="Kazakh baursak"
+                                    >
+
+                                    <div class="dish-info">
+
+                                        <h3>
+                                            Baursak
+                                        </h3>
+
+                                        <p>
+                                            Kazakhstan
+                                        </p>
+
+                                    </div>
+
+                                </article>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+                <!-- PREVIOUS -->
+
+                <button
+                    class="carousel-control-prev"
+                    type="button"
+                    data-bs-target="#dishCarousel"
+                    data-bs-slide="prev"
+                >
+
+                    <span
+                        class="carousel-control-prev-icon"
+                        aria-hidden="true"
+                    ></span>
+
+                    <span class="visually-hidden">
+                        Previous
+                    </span>
+
+                </button>
+
+
+                <!-- NEXT -->
+
+                <button
+                    class="carousel-control-next"
+                    type="button"
+                    data-bs-target="#dishCarousel"
+                    data-bs-slide="next"
+                >
+
+                    <span
+                        class="carousel-control-next-icon"
+                        aria-hidden="true"
+                    ></span>
+
+                    <span class="visually-hidden">
+                        Next
+                    </span>
+
+                </button>
+
+
+            </div>
+
+        </div>
+
+    </section>
+
+
 </main>
 
 
-<footer class="site-footer">
+<!-- ========================================
+     FOOTER
+     ======================================== -->
+
+<footer class="world-footer">
 
     <div class="container footer-row">
 
         <p>
-            Team: Toretay Ali, Kassym Mansur,
+            Team: Toretay Ali,
+            Kassym Mansur,
             Mukhametsharip Aibyn
         </p>
 
         <p>
-            SE-2504 | World Cuisine | Assignment 2
+            SE-2504 |
+            World Cuisine |
+            Assignment 3
         </p>
 
     </div>
 
 </footer>
+
+
+<!-- Bootstrap JS -->
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
+
 
 </body>
 </html>

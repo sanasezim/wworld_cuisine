@@ -1,218 +1,323 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>World Cuisine | Countries</title>
 
-    <!--
-    Team: Toretay Ali, Kassym Mansur, Mukhametsharip Aibyn
-    Group: SE-2504
-    Assigned page: Toretay Ali
-    -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
 
-    <link rel="stylesheet" href="css/style.css">
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
+
 </head>
+
 
 <body>
 
-<header id="main-header">
 
-    <nav class="navbar">
+<nav class="navbar navbar-expand-lg navbar-dark world-navbar sticky-top">
 
-        <a href="index.html" class="logo">
+    <div class="container">
+
+        <a
+            class="navbar-brand"
+            href="index.html"
+        >
             World Cuisine
         </a>
 
-        <ul class="nav-menu">
-            <li><a href="index.html">Home</a></li>
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#mainNavbar"
+            aria-controls="mainNavbar"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+        >
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-            <li>
-                <a href="countries.html" class="active">
-                    Countries
-                </a>
-            </li>
 
-            <li><a href="dishes.html">Dishes</a></li>
-            <li><a href="recipes.html">Recipes</a></li>
-            <li><a href="restaurants.html">Restaurants</a></li>
-            <li><a href="contact.html">Contact</a></li>
-        </ul>
+        <div
+            class="collapse navbar-collapse"
+            id="mainNavbar"
+        >
 
-    </nav>
+            <ul class="navbar-nav ms-auto">
 
-</header>
+                <li class="nav-item">
+                    <a class="nav-link" href="index.html">
+                        Home
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a
+                        class="nav-link active"
+                        href="countries.html"
+                    >
+                        Countries
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="dishes.html">
+                        Dishes
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="recipes.html">
+                        Recipes
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="restaurants.html">
+                        Restaurants
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="contact.html">
+                        Contact
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</nav>
+
 
 
 <main>
 
-    <section class="page-hero">
 
-        <div class="container">
+    <section class="container py-5">
 
-            <p class="eyebrow">
-                EXPLORE
-            </p>
+        <p class="text-uppercase text-secondary fw-bold mb-2">
+            Explore
+        </p>
 
-            <h1>
-                Cuisines around the world.
-            </h1>
+        <h1 class="responsive-title fw-bold mb-3">
+            Cuisines around the world
+        </h1>
 
-            <p>
-                Every cuisine reflects its country's
-                history, ingredients and traditions.
-            </p>
+        <p class="responsive-text">
+            Every cuisine reflects its country's
+            history, ingredients and traditions.
+        </p>
+
+    </section>
+
+
+
+    <section class="container pb-5">
+
+        <div class="mq-card-group">
+
+
+            <article class="mq-card">
+
+                <span class="country-code">
+                    KZ
+                </span>
+
+                <h2 class="h4">
+                    Kazakhstan
+                </h2>
+
+                <p>
+                    Traditional Kazakh cuisine reflects
+                    nomadic culture and hospitality.
+                </p>
+
+                <ul>
+                    <li>Beshbarmak</li>
+                    <li>Baursak</li>
+                    <li>Kazy</li>
+                </ul>
+
+            </article>
+
+
+
+            <article class="mq-card">
+
+                <span class="country-code">
+                    IT
+                </span>
+
+                <h2 class="h4">
+                    Italy
+                </h2>
+
+                <p>
+                    Italian cuisine is known for
+                    fresh ingredients and simple recipes.
+                </p>
+
+                <ul>
+                    <li>Pizza</li>
+                    <li>Pasta</li>
+                    <li>Risotto</li>
+                </ul>
+
+            </article>
+
+
+
+            <article class="mq-card">
+
+                <span class="country-code">
+                    JP
+                </span>
+
+                <h2 class="h4">
+                    Japan
+                </h2>
+
+                <p>
+                    Japanese cuisine values balance,
+                    presentation and seasonal ingredients.
+                </p>
+
+                <ul>
+                    <li>Sushi</li>
+                    <li>Ramen</li>
+                    <li>Tempura</li>
+                </ul>
+
+            </article>
+
+
+
+            <article class="mq-card">
+
+                <span class="country-code">
+                    MX
+                </span>
+
+                <h2 class="h4">
+                    Mexico
+                </h2>
+
+                <p>
+                    Mexican cuisine combines tortillas,
+                    vegetables, beans and spices.
+                </p>
+
+                <ul>
+                    <li>Tacos</li>
+                    <li>Quesadillas</li>
+                    <li>Enchiladas</li>
+                </ul>
+
+            </article>
+
+
+
+            <article class="mq-card">
+
+                <span class="country-code">
+                    IN
+                </span>
+
+                <h2 class="h4">
+                    India
+                </h2>
+
+                <p>
+                    Indian cuisine includes spices
+                    and many regional traditions.
+                </p>
+
+                <ul>
+                    <li>Biryani</li>
+                    <li>Dal</li>
+                    <li>Naan</li>
+                </ul>
+
+            </article>
+
+
+
+            <article class="mq-card">
+
+                <span class="country-code">
+                    KR
+                </span>
+
+                <h2 class="h4">
+                    South Korea
+                </h2>
+
+                <p>
+                    Korean cuisine combines rice,
+                    vegetables and fermented foods.
+                </p>
+
+                <ul>
+                    <li>Kimchi</li>
+                    <li>Bibimbap</li>
+                    <li>Tteokbokki</li>
+                </ul>
+
+            </article>
+
 
         </div>
 
     </section>
 
-
-    <section class="section">
-
-        <div class="container">
-
-            <div class="cards">
-
-                <article class="card">
-                    <span class="country">KZ</span>
-
-                    <h3>Kazakhstan</h3>
-
-                    <p>
-                        Traditional Kazakh cuisine reflects
-                        nomadic culture and hospitality.
-                    </p>
-
-                    <ul>
-                        <li>Beshbarmak</li>
-                        <li>Baursak</li>
-                        <li>Kazy</li>
-                    </ul>
-                </article>
-
-
-                <article class="card">
-                    <span class="country">IT</span>
-
-                    <h3>Italy</h3>
-
-                    <p>
-                        Italian cuisine is known for
-                        fresh ingredients and simple recipes.
-                    </p>
-
-                    <ul>
-                        <li>Pizza</li>
-                        <li>Pasta</li>
-                        <li>Risotto</li>
-                    </ul>
-                </article>
-
-
-                <article class="card">
-                    <span class="country">JP</span>
-
-                    <h3>Japan</h3>
-
-                    <p>
-                        Japanese cuisine values balance,
-                        presentation and seasonal ingredients.
-                    </p>
-
-                    <ul>
-                        <li>Sushi</li>
-                        <li>Ramen</li>
-                        <li>Tempura</li>
-                    </ul>
-                </article>
-
-
-                <article class="card">
-                    <span class="country">MX</span>
-
-                    <h3>Mexico</h3>
-
-                    <p>
-                        Mexican cuisine combines tortillas,
-                        vegetables, beans and spices.
-                    </p>
-
-                    <ul>
-                        <li>Tacos</li>
-                        <li>Quesadillas</li>
-                        <li>Enchiladas</li>
-                    </ul>
-                </article>
-
-
-                <article class="card">
-                    <span class="country">IN</span>
-
-                    <h3>India</h3>
-
-                    <p>
-                        Indian cuisine includes rich spices
-                        and many regional traditions.
-                    </p>
-
-                    <ul>
-                        <li>Biryani</li>
-                        <li>Dal</li>
-                        <li>Naan</li>
-                    </ul>
-                </article>
-
-
-                <article class="card">
-                    <span class="country">KR</span>
-
-                    <h3>South Korea</h3>
-
-                    <p>
-                        Korean cuisine combines rice,
-                        vegetables and fermented foods.
-                    </p>
-
-                    <ul>
-                        <li>Kimchi</li>
-                        <li>Bibimbap</li>
-                        <li>Tteokbokki</li>
-                    </ul>
-                </article>
-
-            </div>
-
-
-            <img
-                src="https://real-kz.com/admin/upload/images/1698335492-02c39fb0-f235-148c-7932-b3af5d49e203.JPG"
-                alt="Modern international restaurant dining area"
-                class="banner-image"
-            >
-
-        </div>
-
-    </section>
 
 </main>
 
 
-<footer>
 
-    <div class="container">
+<footer class="world-footer py-4 mt-5">
 
-        <p>
-            Team: Toretay Ali, Kassym Mansur, Mukhametsharip Aibyn
+    <div class="container text-center">
+
+        <p class="text-white mb-1">
+            Team: Toretay Ali,
+            Kassym Mansur,
+            Mukhametsharip Aibyn
         </p>
 
-        <p>
-            SE-2504 | World Cuisine | Front-End Assignment 1
+        <p class="text-white-50 mb-0">
+            SE-2504 |
+            World Cuisine |
+            Front-End Assignment 3
         </p>
 
     </div>
 
 </footer>
+
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
+
 
 </body>
 </html>
