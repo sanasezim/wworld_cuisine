@@ -1,13 +1,5 @@
-/* =========================================
-   WORLD CUISINE
-   ASSIGNMENT 3
-   Bootstrap + Media Queries
-   ========================================= */
 
 
-/* =========================================
-   VARIABLES
-   ========================================= */
 
 :root {
     --background: #f7f7f3;
@@ -62,26 +54,11 @@ img {
 
 h1,
 h2,
-h3 {
+h3,
+h4,
+h5,
+h6 {
     color: var(--text);
-}
-
-
-h1 {
-    font-size: 3rem;
-    line-height: 1.1;
-
-    margin-bottom: 16px;
-}
-
-
-h2 {
-    font-size: 2rem;
-}
-
-
-h3 {
-    font-size: 1.1rem;
 }
 
 
@@ -91,7 +68,9 @@ p {
 
 
 a {
-    transition: 0.2s;
+    transition:
+        color 0.2s,
+        background-color 0.2s;
 }
 
 
@@ -109,25 +88,16 @@ a {
 
 
 .navbar-brand {
-    color: white;
+    color: white !important;
 
     font-weight: 700;
+
     letter-spacing: 0.3px;
-}
-
-
-.navbar-brand:hover {
-    color: white;
 }
 
 
 .nav-link {
     color: #c9c9c5 !important;
-
-    margin-left: 4px;
-
-    padding-left: 12px !important;
-    padding-right: 12px !important;
 
     border-radius: 20px;
 }
@@ -152,54 +122,38 @@ a {
 
 
 /* =========================================
-   GENERAL SECTIONS
+   PAGE HERO
    ========================================= */
 
-.section {
-    padding: 70px 0;
-}
-
-
-.section-light {
-    background-color: #eeeeea;
-}
-
-
 .page-hero {
-    padding: 75px 0 35px;
+    background-color: var(--background);
 }
 
 
 .page-hero h1 {
-    font-weight: 700;
+    font-size: 3rem;
+
+    line-height: 1.1;
 }
 
 
 .hero-description {
     max-width: 650px;
+
+    font-size: 1.05rem;
 }
 
 
 .eyebrow {
-    margin-bottom: 8px;
-
     color: var(--accent);
 
     font-size: 0.78rem;
+
     font-weight: 700;
 
     letter-spacing: 1.5px;
 
     text-transform: uppercase;
-}
-
-
-.section-heading {
-    max-width: 650px;
-
-    margin:
-        0 auto
-        35px;
 }
 
 
@@ -209,6 +163,7 @@ a {
 
 .hero-title {
     font-size: 3.6rem;
+
     font-weight: 700;
 
     line-height: 1.05;
@@ -251,12 +206,14 @@ a {
 
 .btn-dark {
     background-color: var(--dark);
+
     border-color: var(--dark);
 }
 
 
 .btn-dark:hover {
     background-color: var(--accent);
+
     border-color: var(--accent);
 }
 
@@ -266,13 +223,13 @@ a {
    ========================================= */
 
 .card {
-    border: 1px solid var(--border);
-
-    border-radius: 16px;
-
     overflow: hidden;
 
     background-color: white;
+
+    border: 1px solid var(--border);
+
+    border-radius: 16px;
 
     transition:
         transform 0.2s,
@@ -290,6 +247,7 @@ a {
 
 
 .card-img-top {
+    width: 100%;
     height: 180px;
 
     object-fit: cover;
@@ -297,8 +255,8 @@ a {
 
 
 /* =========================================
-   TASK 1
    RESPONSIVE TYPOGRAPHY
+   COUNTRIES PAGE
    ========================================= */
 
 .responsive-title {
@@ -316,8 +274,7 @@ a {
 
 
 /* =========================================
-   TASK 2
-   MEDIA QUERY CARDS
+   MEDIA QUERY COUNTRY CARDS
    ========================================= */
 
 .mq-card-group {
@@ -330,8 +287,6 @@ a {
 
 
 .mq-card {
-    padding: 22px;
-
     background-color: white;
 
     border: 1px solid var(--border);
@@ -356,16 +311,14 @@ a {
 .country-code {
     display: inline-block;
 
-    margin-bottom: 12px;
-
-    padding: 5px 10px;
-
     background-color: var(--accent-light);
+
     color: var(--accent);
 
     border-radius: 20px;
 
     font-size: 0.8rem;
+
     font-weight: 700;
 }
 
@@ -380,7 +333,7 @@ a {
     grid-template-columns:
         repeat(3, 1fr);
 
-    gap: 16px;
+    gap: 18px;
 }
 
 
@@ -389,13 +342,12 @@ a {
 
     margin: 0;
 
-    min-height: 220px;
-
     overflow: hidden;
 
     background-color: white;
 
     border: 1px solid var(--border);
+
     border-radius: 16px;
 
     box-shadow:
@@ -477,116 +429,92 @@ a {
 
 
 /* =========================================
-   DISHES CAROUSEL
+   BOOTSTRAP CAROUSEL
    ========================================= */
 
-.dish-carousel {
-    position: relative;
+.carousel-section {
+    background-color: #eeeeea;
+}
 
-    padding:
-        25px
-        55px
-        50px;
 
-    background-color: #e9e9e4;
+#foodCarousel {
+    max-width: 900px;
 
-    border: 1px solid var(--border);
+    margin-left: auto;
+    margin-right: auto;
+
+    overflow: hidden;
+
     border-radius: 20px;
 
-    overflow: hidden;
-}
-
-
-.carousel-dish-row {
-    align-items: stretch;
-}
-
-
-.dish-card {
-    height: 100%;
-
-    overflow: hidden;
-
-    background-color: white;
-
-    border: 1px solid var(--border);
-    border-radius: 14px;
-
-    transition:
-        transform 0.2s,
-        box-shadow 0.2s;
-}
-
-
-.dish-card:hover {
-    transform: translateY(-4px);
-
     box-shadow:
-        0 10px 24px
-        rgba(0, 0, 0, 0.08);
+        0 15px 35px
+        rgba(0, 0, 0, 0.12);
 }
 
 
-.dish-card img {
+/* SAME SIZE FOR ALL IMAGES */
+
+.carousel-food-image {
     width: 100%;
-    height: 190px;
+    height: 500px;
 
     object-fit: cover;
 }
 
 
-.dish-info {
-    padding: 15px;
+/* =========================================
+   CAROUSEL CONTROLS
+   ========================================= */
+
+#foodCarousel .carousel-control-prev,
+#foodCarousel .carousel-control-next {
+    width: 12%;
 }
 
 
-.dish-info h3 {
-    margin-bottom: 3px;
+#foodCarousel .carousel-control-prev-icon,
+#foodCarousel .carousel-control-next-icon {
+    width: 44px;
+    height: 44px;
 
-    font-weight: 700;
-}
-
-
-.dish-info p {
-    margin-bottom: 0;
-
-    font-size: 0.9rem;
-}
-
-
-.dish-carousel .carousel-control-prev,
-.dish-carousel .carousel-control-next {
-    width: 52px;
-}
-
-
-.dish-carousel .carousel-control-prev-icon,
-.dish-carousel .carousel-control-next-icon {
-    width: 38px;
-    height: 38px;
-
-    padding: 8px;
-
-    background-color: var(--dark);
-
-    border-radius: 50%;
+    background-color:
+        rgba(0, 0, 0, 0.68);
 
     background-size: 55%;
+
+    border-radius: 50%;
 }
 
 
-.dish-carousel .carousel-indicators {
-    margin-bottom: 15px;
+/* =========================================
+   CAROUSEL INDICATORS
+   ========================================= */
+
+#foodCarousel .carousel-indicators {
+    margin-bottom: 18px;
 }
 
 
-.dish-carousel .carousel-indicators button {
-    width: 9px;
-    height: 9px;
+#foodCarousel .carousel-indicators button {
+    width: 10px;
+    height: 10px;
+
+    margin-left: 5px;
+    margin-right: 5px;
+
+    border: 0;
 
     border-radius: 50%;
 
-    background-color: var(--dark);
+    background-color: white;
+
+    opacity: 0.6;
+}
+
+
+#foodCarousel .carousel-indicators .active {
+    opacity: 1;
 }
 
 
@@ -598,6 +526,7 @@ a {
     background-color: white;
 
     border: 1px solid var(--border);
+
     border-radius: 18px;
 
     transition:
@@ -681,29 +610,11 @@ a {
    ========================================= */
 
 .world-footer {
-    padding: 26px 0;
-
     background-color: var(--dark);
 }
 
 
-.footer-row {
-    display: flex;
-
-    justify-content: space-between;
-    align-items: center;
-
-    gap: 20px;
-
-    flex-wrap: wrap;
-}
-
-
 .world-footer p {
-    margin: 0;
-
-    color: #c9c9c5;
-
     font-size: 0.85rem;
 }
 
@@ -760,9 +671,22 @@ a {
    TABLET AND SMALLER
    ========================================= */
 
+@media (max-width: 991px) {
+
+    .carousel-food-image {
+        height: 420px;
+    }
+
+}
+
+
+/* =========================================
+   SMALL TABLET
+   ========================================= */
+
 @media (max-width: 767px) {
 
-    h1 {
+    .page-hero h1 {
         font-size: 2.4rem;
     }
 
@@ -777,18 +701,6 @@ a {
     }
 
 
-    .section {
-        padding: 50px 0;
-    }
-
-
-    .page-hero {
-        padding: 55px 0 25px;
-    }
-
-
-    /* Gallery becomes 2 columns */
-
     .gallery {
         grid-template-columns:
             repeat(2, 1fr);
@@ -800,35 +712,13 @@ a {
     }
 
 
-    /* Carousel */
-
-    .dish-carousel {
-        padding:
-            20px
-            50px
-            45px;
-    }
-
-
-    .dish-card {
-        margin-bottom: 15px;
-    }
-
-
-    .dish-card img {
-        height: 180px;
-    }
-
-
     .recipe-image {
         height: 220px;
     }
 
 
-    .footer-row {
-        justify-content: center;
-
-        text-align: center;
+    .carousel-food-image {
+        height: 350px;
     }
 
 }
@@ -840,17 +730,12 @@ a {
 
 @media (max-width: 576px) {
 
-    h1 {
+    .page-hero h1 {
         font-size: 2.1rem;
     }
 
 
-    h2 {
-        font-size: 1.6rem;
-    }
-
-
-    /* Gallery becomes 1 column */
+    /* GALLERY */
 
     .gallery {
         grid-template-columns: 1fr;
@@ -863,8 +748,8 @@ a {
 
 
     /*
-    On touch devices hover may not be convenient,
-    so caption remains visible on small screens.
+    Mobile devices do not have normal hover,
+    so captions stay visible.
     */
 
     .gallery-item figcaption {
@@ -875,30 +760,31 @@ a {
     }
 
 
-    .dish-carousel {
-        padding:
-            15px
-            42px
-            45px;
+    /* CAROUSEL */
+
+    #foodCarousel {
+        border-radius: 14px;
     }
 
 
-    .dish-card img {
-        height: 170px;
+    .carousel-food-image {
+        height: 280px;
     }
 
 
-    .btn-group {
-        display: flex;
-
-        flex-direction: column;
-
-        width: 100%;
+    #foodCarousel .carousel-control-prev-icon,
+    #foodCarousel .carousel-control-next-icon {
+        width: 34px;
+        height: 34px;
     }
 
 
-    .btn-group .btn {
-        border-radius: 20px !important;
+    #foodCarousel .carousel-indicators button {
+        width: 8px;
+        height: 8px;
+
+        margin-left: 3px;
+        margin-right: 3px;
     }
 
 }

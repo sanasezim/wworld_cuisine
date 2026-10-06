@@ -34,9 +34,9 @@
 <body>
 
 
-<!-- ========================================
+<!-- =========================================
      NAVBAR
-     ======================================== -->
+     ========================================= -->
 
 <nav class="navbar navbar-expand-lg navbar-dark world-navbar sticky-top">
 
@@ -91,6 +91,7 @@
                 <li class="nav-item">
                     <a
                         class="nav-link active"
+                        aria-current="page"
                         href="dishes.html"
                     >
                         Dishes
@@ -133,28 +134,30 @@
 </nav>
 
 
-<!-- ========================================
+<!-- =========================================
      MAIN
-     ======================================== -->
+     ========================================= -->
 
 <main>
 
 
-    <!-- PAGE HERO -->
+    <!-- =====================================
+         HERO
+         ===================================== -->
 
-    <section class="page-hero">
+    <section class="page-hero py-5">
 
         <div class="container text-center">
 
-            <p class="eyebrow">
+            <p class="eyebrow mb-2">
                 WORLD FOOD
             </p>
 
-            <h1>
+            <h1 class="fw-bold mb-3">
                 Famous dishes
             </h1>
 
-            <p class="hero-description mx-auto">
+            <p class="hero-description mx-auto mb-0">
                 Explore popular dishes from different
                 cuisines around the world.
             </p>
@@ -165,25 +168,25 @@
 
 
 
-    <!-- ========================================
+    <!-- =====================================
          IMAGE GALLERY
-         ======================================== -->
+         ===================================== -->
 
-    <section class="section">
+    <section class="py-5">
 
         <div class="container">
 
-            <div class="section-heading text-center">
+            <div class="text-center mb-4">
 
-                <p class="eyebrow">
+                <p class="eyebrow mb-2">
                     DISCOVER
                 </p>
 
-                <h2>
+                <h2 class="fw-bold mb-2">
                     Image Gallery
                 </h2>
 
-                <p>
+                <p class="mb-0">
                     Hover over an image to see
                     the dish name and country.
                 </p>
@@ -363,68 +366,118 @@
 
 
 
-    <!-- ========================================
+    <!-- =====================================
          BOOTSTRAP CAROUSEL
-         9 IMAGES TOTAL
-         ======================================== -->
+         9 PHOTOS ONLY
+         ===================================== -->
 
-    <section class="section section-light">
+    <section class="carousel-section py-5">
 
         <div class="container">
 
-            <div class="section-heading text-center">
+            <div class="text-center mb-4">
 
-                <p class="eyebrow">
+                <p class="eyebrow mb-2">
                     FEATURED
                 </p>
 
-                <h2>
-                    Famous Dishesgit add .
+                <h2 class="fw-bold mb-2">
+                    Food Carousel
                 </h2>
 
-                <p>
-                    Use the controls to explore
-                    all nine dishes.
+                <p class="mb-0">
+                    Explore famous dishes from around the world.
                 </p>
 
             </div>
 
 
             <div
-                id="dishCarousel"
-                class="carousel slide dish-carousel"
+                id="foodCarousel"
+                class="carousel slide carousel-fade"
+                data-bs-ride="carousel"
+                data-bs-interval="3000"
             >
 
 
-                <!-- INDICATORS -->
+                <!-- =========================
+                     INDICATORS
+                     ========================= -->
 
                 <div class="carousel-indicators">
 
                     <button
                         type="button"
-                        data-bs-target="#dishCarousel"
+                        data-bs-target="#foodCarousel"
                         data-bs-slide-to="0"
                         class="active"
                         aria-current="true"
-                        aria-label="First group of dishes"
+                        aria-label="Slide 1"
                     ></button>
 
                     <button
                         type="button"
-                        data-bs-target="#dishCarousel"
+                        data-bs-target="#foodCarousel"
                         data-bs-slide-to="1"
-                        aria-label="Second group of dishes"
+                        aria-label="Slide 2"
                     ></button>
 
                     <button
                         type="button"
-                        data-bs-target="#dishCarousel"
+                        data-bs-target="#foodCarousel"
                         data-bs-slide-to="2"
-                        aria-label="Third group of dishes"
+                        aria-label="Slide 3"
+                    ></button>
+
+                    <button
+                        type="button"
+                        data-bs-target="#foodCarousel"
+                        data-bs-slide-to="3"
+                        aria-label="Slide 4"
+                    ></button>
+
+                    <button
+                        type="button"
+                        data-bs-target="#foodCarousel"
+                        data-bs-slide-to="4"
+                        aria-label="Slide 5"
+                    ></button>
+
+                    <button
+                        type="button"
+                        data-bs-target="#foodCarousel"
+                        data-bs-slide-to="5"
+                        aria-label="Slide 6"
+                    ></button>
+
+                    <button
+                        type="button"
+                        data-bs-target="#foodCarousel"
+                        data-bs-slide-to="6"
+                        aria-label="Slide 7"
+                    ></button>
+
+                    <button
+                        type="button"
+                        data-bs-target="#foodCarousel"
+                        data-bs-slide-to="7"
+                        aria-label="Slide 8"
+                    ></button>
+
+                    <button
+                        type="button"
+                        data-bs-target="#foodCarousel"
+                        data-bs-slide-to="8"
+                        aria-label="Slide 9"
                     ></button>
 
                 </div>
 
+
+
+                <!-- =========================
+                     SLIDES
+                     ========================= -->
 
                 <div class="carousel-inner">
 
@@ -433,90 +486,11 @@
 
                     <div class="carousel-item active">
 
-                        <div class="row g-4 carousel-dish-row">
-
-
-                            <div class="col-md-4">
-
-                                <article class="dish-card">
-
-                                    <img
-                                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyAl3miNOGMKY6arHZwxVIWGgDeRQHvpw-SgTEpD5Vcg18VDNYS9lNvy0&s=10"
-                                        alt="Kazakh beshbarmak"
-                                    >
-
-                                    <div class="dish-info">
-
-                                        <h3>
-                                            Beshbarmak
-                                        </h3>
-
-                                        <p>
-                                            Kazakhstan
-                                        </p>
-
-                                    </div>
-
-                                </article>
-
-                            </div>
-
-
-
-                            <div class="col-md-4">
-
-                                <article class="dish-card">
-
-                                    <img
-                                        src="https://assets.tmecosys.com/image/upload/t_web_rdp_recipe_584x480_1_5x/img/recipe/ras/Assets/48a49653c8716457eb0b2f7eb3c7d74c/Derivates/8d83d9ed4567fa15456d8eec7557e60006a15576.jpg"
-                                        alt="Italian pizza"
-                                    >
-
-                                    <div class="dish-info">
-
-                                        <h3>
-                                            Pizza
-                                        </h3>
-
-                                        <p>
-                                            Italy
-                                        </p>
-
-                                    </div>
-
-                                </article>
-
-                            </div>
-
-
-
-                            <div class="col-md-4">
-
-                                <article class="dish-card">
-
-                                    <img
-                                        src="https://sxodim.com/uploads/images/2023/01/25/optimized/f051bf63aa2ef268acad87b389497111_800xauto-q-85.jpg"
-                                        alt="Japanese sushi"
-                                    >
-
-                                    <div class="dish-info">
-
-                                        <h3>
-                                            Sushi
-                                        </h3>
-
-                                        <p>
-                                            Japan
-                                        </p>
-
-                                    </div>
-
-                                </article>
-
-                            </div>
-
-
-                        </div>
+                        <img
+                            src="https://nutriscan.app/calories-nutrition/images/beshbarmak-876d1.webp"
+                            class="d-block w-100 carousel-food-image"
+                            alt="Kazakh beshbarmak"
+                        >
 
                     </div>
 
@@ -526,90 +500,11 @@
 
                     <div class="carousel-item">
 
-                        <div class="row g-4 carousel-dish-row">
-
-
-                            <div class="col-md-4">
-
-                                <article class="dish-card">
-
-                                    <img
-                                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQuh92MiRfQoQ8m9FLQaQtKWZbGhscBKZCwJKDxHxelWU9Oq4RIRWE5RnQM&s=10"
-                                        alt="Mexican tacos"
-                                    >
-
-                                    <div class="dish-info">
-
-                                        <h3>
-                                            Tacos
-                                        </h3>
-
-                                        <p>
-                                            Mexico
-                                        </p>
-
-                                    </div>
-
-                                </article>
-
-                            </div>
-
-
-
-                            <div class="col-md-4">
-
-                                <article class="dish-card">
-
-                                    <img
-                                        src="https://www.recipetineats.com/tachyon/2018/08/Chicken-Biryani_1-1.jpg"
-                                        alt="Indian biryani"
-                                    >
-
-                                    <div class="dish-info">
-
-                                        <h3>
-                                            Biryani
-                                        </h3>
-
-                                        <p>
-                                            India
-                                        </p>
-
-                                    </div>
-
-                                </article>
-
-                            </div>
-
-
-
-                            <div class="col-md-4">
-
-                                <article class="dish-card">
-
-                                    <img
-                                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTE7UtkVFfiNKGsHsc7dsWanE11OB99Al81xUK5E4prf20bGLLnEie5f9o&s=10"
-                                        alt="Korean bibimbap"
-                                    >
-
-                                    <div class="dish-info">
-
-                                        <h3>
-                                            Bibimbap
-                                        </h3>
-
-                                        <p>
-                                            South Korea
-                                        </p>
-
-                                    </div>
-
-                                </article>
-
-                            </div>
-
-
-                        </div>
+                        <img
+                            src="https://static.1000.menu/img/content-v2/ef/27/10853/picca-margarita-v-domashnix-usloviyax_1769509858_1_bsgg32n_max.jpg"
+                            class="d-block w-100 carousel-food-image"
+                            alt="Italian pizza"
+                        >
 
                     </div>
 
@@ -619,90 +514,95 @@
 
                     <div class="carousel-item">
 
-                        <div class="row g-4 carousel-dish-row">
+                        <img
+                            src="https://takestwoeggs.com/wp-content/uploads/2025/02/Sushi-at-home.jpg"
+                            class="d-block w-100 carousel-food-image"
+                            alt="Japanese sushi"
+                        >
 
-
-                            <div class="col-md-4">
-
-                                <article class="dish-card">
-
-                                    <img
-                                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTlFMsrtlXQoTV7BRbc50JKUA_KbMNN53vw852sExP3ZWXiSi0PvHHZgLA&s=10"
-                                        alt="French croissant"
-                                    >
-
-                                    <div class="dish-info">
-
-                                        <h3>
-                                            Croissant
-                                        </h3>
-
-                                        <p>
-                                            France
-                                        </p>
-
-                                    </div>
-
-                                </article>
-
-                            </div>
+                    </div>
 
 
 
-                            <div class="col-md-4">
+                    <!-- SLIDE 4 -->
 
-                                <article class="dish-card">
+                    <div class="carousel-item">
 
-                                    <img
-                                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRV9Bnh4iB3WrusS4MkZSpXgmu5d4eQ9CeoZLaoIvR6B8MTCoqlFsnpFcU6&s=10"
-                                        alt="Kebab"
-                                    >
+                        <img
+                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShivSG0PbAgTR-OGy-lk3zJuEW1wU3g-npoW30zfyNRULmPSkd7aZzEtM&s=10"
+                            class="d-block w-100 carousel-food-image"
+                            alt="Mexican tacos"
+                        >
 
-                                    <div class="dish-info">
-
-                                        <h3>
-                                            Kebab
-                                        </h3>
-
-                                        <p>
-                                            Middle East
-                                        </p>
-
-                                    </div>
-
-                                </article>
-
-                            </div>
+                    </div>
 
 
 
-                            <div class="col-md-4">
+                    <!-- SLIDE 5 -->
 
-                                <article class="dish-card">
+                    <div class="carousel-item">
 
-                                    <img
-                                        src="https://resizer.mail.ru/p/74a628a2-ba09-5b23-9842-ffbd2d7dbe36/AQAFNn2-17H_kfHIkG-nxXkna8SLMhczqtObmG--DkGVzLFtQw0D84Ua5Ne8ZszCwrwv6JRmf59PeUl4R8m5J516kVE.jpg"
-                                        alt="Kazakh baursak"
-                                    >
+                        <img
+                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRjB0j3zl4VDI3-IyKD1O5-LSi-LIuOwJBSf5XkkntDv_ApKPadPQpHLIM&s=10"
+                            class="d-block w-100 carousel-food-image"
+                            alt="Indian biryani"
+                        >
 
-                                    <div class="dish-info">
-
-                                        <h3>
-                                            Baursak
-                                        </h3>
-
-                                        <p>
-                                            Kazakhstan
-                                        </p>
-
-                                    </div>
-
-                                </article>
-
-                            </div>
+                    </div>
 
 
-                        </div>
+
+                    <!-- SLIDE 6 -->
+
+                    <div class="carousel-item">
+
+                        <img
+                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPBpQtCM7or25oc-nw4Q1ENgoJBwf3m0mKQl5pTmoT9yiTAAJ5UXDh3w1H&s=10"
+                            class="d-block w-100 carousel-food-image"
+                            alt="Korean bibimbap"
+                        >
+
+                    </div>
+
+
+
+                    <!-- SLIDE 7 -->
+
+                    <div class="carousel-item">
+
+                        <img
+                            src= "https://aceitesclemen.com/wp-content/uploads/2023/04/croisant-1080x675.jpg"
+                            class="d-block w-100 carousel-food-image"
+                            alt="French croissant"
+                        >
+
+                    </div>
+
+
+
+                    <!-- SLIDE 8 -->
+
+                    <div class="carousel-item">
+
+                        <img
+                            src="https://www.simplyrecipes.com/thmb/StZxuW7pEltVC4_eRB9nQVRa_IA=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/Simply-Recipes-Beef-Kebabs-LEAD-1-625cc9255ef44fd48a366bbef6d4664c.jpg"
+                            class="d-block w-100 carousel-food-image"
+                            alt="Kebab"
+                        >
+
+                    </div>
+
+
+
+                    <!-- SLIDE 9 -->
+
+                    <div class="carousel-item">
+
+                        <img
+                            src="https://images.gastronom.ru/4VN7UbVPZBzT9Ng_2zPimZZfKwcuoEwYrkNYEFOZDLo/pr:article-cover-image/g:ce/rs:auto:0:0:0/L2Ntcy9hbGwtaW1hZ2VzLzE1ZDUzMjc2LTZjYmMtNGRjNS04MTU1LTY4NjFlYThiNWQzMC5qcGc.webp"
+                            class="d-block w-100 carousel-food-image"
+                            alt="Kazakh baursak"
+                        >
 
                     </div>
 
@@ -710,12 +610,15 @@
                 </div>
 
 
-                <!-- PREVIOUS -->
+
+                <!-- =========================
+                     PREVIOUS
+                     ========================= -->
 
                 <button
                     class="carousel-control-prev"
                     type="button"
-                    data-bs-target="#dishCarousel"
+                    data-bs-target="#foodCarousel"
                     data-bs-slide="prev"
                 >
 
@@ -731,12 +634,15 @@
                 </button>
 
 
-                <!-- NEXT -->
+
+                <!-- =========================
+                     NEXT
+                     ========================= -->
 
                 <button
                     class="carousel-control-next"
                     type="button"
-                    data-bs-target="#dishCarousel"
+                    data-bs-target="#foodCarousel"
                     data-bs-slide="next"
                 >
 
@@ -762,21 +668,23 @@
 </main>
 
 
-<!-- ========================================
+
+<!-- =========================================
      FOOTER
-     ======================================== -->
+     ========================================= -->
 
-<footer class="world-footer">
+<footer class="world-footer py-4">
 
-    <div class="container footer-row">
+    <div class="container text-center">
 
-        <p>
-            Team: Toretay Ali,
+        <p class="text-white mb-1">
+            Team:
+            Toretay Ali,
             Kassym Mansur,
             Mukhametsharip Aibyn
         </p>
 
-        <p>
+        <p class="text-white-50 mb-0">
             SE-2504 |
             World Cuisine |
             Assignment 3
@@ -787,7 +695,6 @@
 </footer>
 
 
-<!-- Bootstrap JS -->
 
 <script
     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
@@ -795,4 +702,5 @@
 
 
 </body>
+
 </html>
