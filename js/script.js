@@ -1,3 +1,4 @@
+
 $(document).ready(function () {
     console.log("jQuery is ready!");
 
@@ -13,8 +14,7 @@ $(document).ready(function () {
     initScroll();
 });
 
-// Task 7: notifications
-
+// Notifications
 function notifyUser(text) {
     $("#notification")
         .stop(true, true)
@@ -25,7 +25,6 @@ function notifyUser(text) {
 }
 
 // Sound
-
 let audioContext;
 let currentTone;
 
@@ -45,12 +44,7 @@ function playSound() {
         volume.connect(audioContext.destination);
 
         tone.frequency.value = 700;
-
-        volume.gain.setValueAtTime(
-            0.08,
-            audioContext.currentTime
-        );
-
+        volume.gain.setValueAtTime(0.08, audioContext.currentTime);
         volume.gain.exponentialRampToValueAtTime(
             0.001,
             audioContext.currentTime + 0.1
@@ -58,7 +52,6 @@ function playSound() {
 
         tone.start();
         tone.stop(audioContext.currentTime + 0.1);
-
         currentTone = tone;
 
         tone.onended = function () {
@@ -75,7 +68,6 @@ function playSound() {
 }
 
 // Day and night theme
-
 function initTheme() {
     try {
         document.body.classList.toggle(
@@ -95,7 +87,6 @@ function initTheme() {
     $("#themeBtn").on("click", function () {
         $("body").toggleClass("night");
         document.body.style.backgroundColor = "";
-
         updateLabel();
 
         try {
@@ -107,46 +98,107 @@ function initTheme() {
     });
 }
 
-// Keyboard navigation and switch statement
-
+// Keyboard navigation using arrow keys
 function initNavigation() {
-    const links = document.querySelectorAll(".navbar-nav .nav-link");
+    const style = document.createElement("style");
+    style.textContent = `
+        a:focus-visible,
+        button:focus-visible,
+        [role="button"]:focus-visible {
+            outline: 3px solid #ff9800 !important;
+            outline-offset: 3px;
+        }
+    `;
+    document.head.appendChild(style);
 
-    links.forEach(function (link, index) {
-        link.addEventListener("keydown", function (event) {
-            let next;
+    $(document).on("keydown", function (event) {
+        let direction = 0;
 
-            switch (event.key) {
-                case "ArrowRight":
-                case "ArrowDown":
-                    next = (index + 1) % links.length;
-                    break;
+        switch (event.key) {
+            case "ArrowRight":
+            case "ArrowDown":
+                direction = 1;
+                break;
 
-                case "ArrowLeft":
-                case "ArrowUp":
-                    next = (index - 1 + links.length) % links.length;
-                    break;
+            case "ArrowLeft":
+            case "ArrowUp":
+                direction = -1;
+                break;
 
-                case "Home":
-                    next = 0;
-                    break;
+            case "Home":
+                direction = "first";
+                break;
 
-                case "End":
-                    next = links.length - 1;
-                    break;
+            case "End":
+                direction = "last";
+                break;
 
-                default:
-                    return;
-            }
+            default:
+                return;
+        }
 
-            event.preventDefault();
-            links[next].focus();
-        });
+        if (event.ctrlKey || event.altKey || event.metaKey) return;
+
+        const $target = $(event.target);
+
+        // Do not interfere with typing or form controls.
+        if ($target.closest(
+            "input, textarea, select, [contenteditable='true']"
+        ).length) {
+            return;
+        }
+
+        // Keep search suggestions' own arrow navigation.
+        if (
+            $target.closest(".search-panel").length &&
+            !$("#searchSuggestions").prop("hidden")
+        ) {
+            return;
+        }
+
+        const $popup = $("#popupOverlay");
+
+        const $area = $popup.hasClass("show")
+            ? $popup
+            : $(document);
+
+        const items = $area
+            .find("a[href], button, [role='button'][tabindex]")
+            .filter(":visible")
+            .filter(function () {
+                return (
+                    !this.disabled &&
+                    this.getAttribute("aria-disabled") !== "true" &&
+                    !this.classList.contains("disabled") &&
+                    this.tabIndex >= 0
+                );
+            })
+            .get();
+
+        if (items.length === 0) return;
+
+        event.preventDefault();
+
+        const currentIndex = items.indexOf(document.activeElement);
+        let nextIndex;
+
+        if (direction === "first") {
+            nextIndex = 0;
+        } else if (direction === "last") {
+            nextIndex = items.length - 1;
+        } else if (currentIndex === -1) {
+            nextIndex = direction === 1 ? 0 : items.length - 1;
+        } else {
+            nextIndex = (
+                currentIndex + direction + items.length
+            ) % items.length;
+        }
+
+        items[nextIndex].focus();
     });
 }
 
 // Home: clock, background, FAQ and popup
-
 function initHome() {
     if (!$("#datetime").length) return;
 
@@ -213,7 +265,10 @@ function initHome() {
             if (event.shiftKey && document.activeElement === first) {
                 event.preventDefault();
                 last.focus();
-            } else if (!event.shiftKey && document.activeElement === last) {
+            } else if (
+                !event.shiftKey &&
+                document.activeElement === last
+            ) {
                 event.preventDefault();
                 first.focus();
             }
@@ -222,7 +277,6 @@ function initHome() {
 }
 
 // Countries: Read more
-
 function initReadMore() {
     $(".read-more-btn").on("click", function () {
         const extra = this.nextElementSibling;
@@ -234,8 +288,7 @@ function initReadMore() {
     });
 }
 
-// Dish ratings: DOM, loop, click event and animation
-
+// Dish ratings
 function initRatings() {
     document.querySelectorAll(".gallery-item").forEach(function (card) {
         const rating = document.createElement("div");
@@ -247,7 +300,6 @@ function initRatings() {
 
         for (let i = 1; i <= 5; i++) {
             const star = document.createElement("button");
-
             star.type = "button";
             star.className = "star";
             star.textContent = "★";
@@ -287,8 +339,7 @@ function initRatings() {
     });
 }
 
-// Tasks 1–3: live search, autocomplete and highlighting
-
+// Live search and autocomplete
 function initSearch() {
     const $input = $("#dishSearch");
     const $cards = $(".gallery-item");
@@ -306,11 +357,8 @@ function initSearch() {
         $input.attr("aria-expanded", "false");
     }
 
-    // Build text nodes so search input is never interpreted as HTML.
-
     function highlight(element, query) {
         const text = element.textContent;
-
         element.replaceChildren();
 
         let start = 0;
@@ -381,7 +429,6 @@ function initSearch() {
         });
 
         const open = Boolean(showSuggestions && matches.length);
-
         $suggestions.prop("hidden", !open);
         $input.attr("aria-expanded", String(open));
 
@@ -409,6 +456,7 @@ function initSearch() {
 
         if (
             !$suggestions.prop("hidden") &&
+            buttons.length &&
             ["ArrowDown", "ArrowUp"].includes(event.key)
         ) {
             event.preventDefault();
@@ -430,15 +478,15 @@ function initSearch() {
     search(false);
 }
 
-// Recipes: categories and Task 8 clipboard
-
+// Recipes: categories and clipboard
 function initRecipes() {
-   $(".filter-btn").on("click", function (event) {
-    if (event.originalEvent) {
-        playSound();
-    }
+    $(".filter-btn").on("click", function (event) {
+        if (event.originalEvent) {
+            playSound();
+        }
 
-    const category = this.dataset.filter;
+        const category = this.dataset.filter;
+
         $(".filter-btn").removeClass("active");
         $(this).addClass("active");
 
@@ -501,6 +549,7 @@ function initRecipes() {
                 $button.text("Copy recipe").removeAttr("title");
                 $card.find(".copy-feedback").text("");
             }, 2500));
+
         } catch (error) {
             $card.find(".copy-feedback").text(
                 "Allow clipboard access. Use HTTPS or localhost."
@@ -509,8 +558,7 @@ function initRecipes() {
     });
 }
 
-// Restaurant objects, methods and arrays
-
+// Restaurant objects and ratings
 function initRestaurants() {
     const ratings = [4.7, 4.5, 4.3, 4.6, 4.4, 4.2];
 
@@ -521,7 +569,6 @@ function initRestaurants() {
 
             getStars: function () {
                 const full = Math.round(this.rating);
-
                 return "★".repeat(full) + "☆".repeat(5 - full);
             }
         };
@@ -535,8 +582,7 @@ function initRestaurants() {
     });
 }
 
-// Forms: validation, steps, reset and Task 6 spinner
-
+// Forms: validation, steps and loading spinner
 function initForms() {
     const $contact = $("#contactForm");
     let step = 1;
@@ -702,8 +748,7 @@ function initForms() {
         });
 }
 
-// Tasks 4, 5 and 9: progress, counters and lazy loading
-
+// Scroll progress, counters and lazy loading
 function initScroll() {
     function inView(element) {
         const rect = element.getBoundingClientRect();
