@@ -1,7 +1,7 @@
 
-$(document).ready(function () {
-    console.log("jQuery is ready!");
+"use strict";
 
+$(function () {
     initTheme();
     initNavigation();
     initHome();
@@ -11,204 +11,120 @@ $(document).ready(function () {
     initRecipes();
     initRestaurants();
     initForms();
+    initProfile();
+    initMealAPI();
+    initLazyImages();
     initScroll();
 });
 
-// Notifications
-function notifyUser(text) {
+const USER_KEY = "wc_demo_user";
+const SESSION_KEY = "wc_demo_session";
+
+function notifyUser(message) {
     $("#notification")
         .stop(true, true)
-        .text(text)
+        .text(message)
         .fadeIn(150)
         .delay(2500)
         .fadeOut(300);
 }
 
-// Sound
-let audioContext;
-let currentTone;
-
-function playSound() {
+function readStorage(key) {
     try {
-        audioContext = audioContext || new AudioContext();
-        audioContext.resume();
-
-        if (currentTone) {
-            currentTone.stop();
-        }
-
-        const tone = audioContext.createOscillator();
-        const volume = audioContext.createGain();
-
-        tone.connect(volume);
-        volume.connect(audioContext.destination);
-
-        tone.frequency.value = 700;
-        volume.gain.setValueAtTime(0.08, audioContext.currentTime);
-        volume.gain.exponentialRampToValueAtTime(
-            0.001,
-            audioContext.currentTime + 0.1
-        );
-
-        tone.start();
-        tone.stop(audioContext.currentTime + 0.1);
-        currentTone = tone;
-
-        tone.onended = function () {
-            tone.disconnect();
-            volume.disconnect();
-
-            if (currentTone === tone) {
-                currentTone = null;
-            }
-        };
-    } catch (error) {
-        console.log("Sound is unavailable.");
+        return JSON.parse(localStorage.getItem(key) || "null");
+    } catch {
+        return null;
     }
 }
 
-// Day and night theme
+// 1. NIGHT MODE
 function initTheme() {
-    try {
-        document.body.classList.toggle(
-            "night",
-            localStorage.getItem("theme") === "night"
-        );
-    } catch (error) {}
+    const savedTheme = localStorage.getItem("theme");
 
-    function updateLabel() {
-        $("#themeBtn").text(
-            $("body").hasClass("night") ? "Day mode" : "Night mode"
-        );
+    $("body").toggleClass("night", savedTheme === "night");
+
+    function updateButton() {
+        const isNight = $("body").hasClass("night");
+
+        $("#themeBtn")
+            .text(isNight ? "Day mode" : "Night mode")
+            .attr("aria-pressed", String(isNight));
     }
 
-    updateLabel();
+    updateButton();
 
     $("#themeBtn").on("click", function () {
         $("body").toggleClass("night");
         document.body.style.backgroundColor = "";
-        updateLabel();
 
-        try {
-            localStorage.setItem(
-                "theme",
-                $("body").hasClass("night") ? "night" : "day"
-            );
-        } catch (error) {}
+        const theme = $("body").hasClass("night")
+            ? "night"
+            : "day";
+
+        localStorage.setItem("theme", theme);
+        updateButton();
     });
 }
 
-// Keyboard navigation using arrow keys
+// 2. NAVIGATION (NO LOGIN BUTTON)
 function initNavigation() {
-    const style = document.createElement("style");
-    style.textContent = `
-        a:focus-visible,
-        button:focus-visible,
-        [role="button"]:focus-visible {
-            outline: 3px solid #ff9800 !important;
-            outline-offset: 3px;
-        }
-    `;
-    document.head.appendChild(style);
+    $(".navbar-nav a[href='login.html']")
+        .closest("li")
+        .remove();
 
-    $(document).on("keydown", function (event) {
-        let direction = 0;
+    const links = $(".navbar-nav .nav-link").get();
 
-        switch (event.key) {
-            case "ArrowRight":
-            case "ArrowDown":
-                direction = 1;
-                break;
+    links.forEach((link, index) => {
+        link.addEventListener("keydown", function (event) {
+            let next;
 
-            case "ArrowLeft":
-            case "ArrowUp":
-                direction = -1;
-                break;
-
-            case "Home":
-                direction = "first";
-                break;
-
-            case "End":
-                direction = "last";
-                break;
-
-            default:
+            if (event.key === "ArrowRight" ||
+                event.key === "ArrowDown") {
+                next = (index + 1) % links.length;
+            } else if (
+                event.key === "ArrowLeft" ||
+                event.key === "ArrowUp"
+            ) {
+                next = (index - 1 + links.length) % links.length;
+            } else if (event.key === "Home") {
+                next = 0;
+            } else if (event.key === "End") {
+                next = links.length - 1;
+            } else {
                 return;
-        }
+            }
 
-        if (event.ctrlKey || event.altKey || event.metaKey) return;
-
-        const $target = $(event.target);
-
-        // Do not interfere with typing or form controls.
-        if ($target.closest(
-            "input, textarea, select, [contenteditable='true']"
-        ).length) {
-            return;
-        }
-
-        // Keep search suggestions' own arrow navigation.
-        if (
-            $target.closest(".search-panel").length &&
-            !$("#searchSuggestions").prop("hidden")
-        ) {
-            return;
-        }
-
-        const $popup = $("#popupOverlay");
-
-        const $area = $popup.hasClass("show")
-            ? $popup
-            : $(document);
-
-        const items = $area
-            .find("a[href], button, [role='button'][tabindex]")
-            .filter(":visible")
-            .filter(function () {
-                return (
-                    !this.disabled &&
-                    this.getAttribute("aria-disabled") !== "true" &&
-                    !this.classList.contains("disabled") &&
-                    this.tabIndex >= 0
-                );
-            })
-            .get();
-
-        if (items.length === 0) return;
-
-        event.preventDefault();
-
-        const currentIndex = items.indexOf(document.activeElement);
-        let nextIndex;
-
-        if (direction === "first") {
-            nextIndex = 0;
-        } else if (direction === "last") {
-            nextIndex = items.length - 1;
-        } else if (currentIndex === -1) {
-            nextIndex = direction === 1 ? 0 : items.length - 1;
-        } else {
-            nextIndex = (
-                currentIndex + direction + items.length
-            ) % items.length;
-        }
-
-        items[nextIndex].focus();
+            event.preventDefault();
+            links[next].focus();
+        });
     });
 }
 
-// Home: clock, background, FAQ and popup
+// 3. HOME PAGE
 function initHome() {
-    if (!$("#datetime").length) return;
-
+    // Current date and time
     function updateTime() {
-        $("#datetime").text(new Date().toLocaleString("en-US"));
+        const element = document.getElementById("datetime");
+        if (!element) return;
+
+        element.textContent = new Date().toLocaleString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            hour12: false
+        });
     }
 
     updateTime();
-    setInterval(updateTime, 1000);
 
+    if ($("#datetime").length) {
+        setInterval(updateTime, 1000);
+    }
+
+    // Background colors
     let colorIndex = 0;
 
     $("#colorBtn").on("click", function () {
@@ -216,17 +132,24 @@ function initHome() {
             ? ["#15161a", "#292129", "#172a24"]
             : ["#fde8e0", "#e3f2e1", "#e0ecfb"];
 
-        document.body.style.backgroundColor =
-            colors[colorIndex++ % colors.length];
+        $("body").css(
+            "background-color",
+            colors[colorIndex++ % colors.length]
+        );
     });
 
+    // FAQ
     $(".faq-question").on("click", function () {
         const open = $(this).attr("aria-expanded") !== "true";
 
         $(this).attr("aria-expanded", String(open));
-        $(this).next().stop(true, true).slideToggle(200);
+
+        $(this).next(".faq-answer")
+            .stop(true, true)
+            .slideToggle(200);
     });
 
+    // Subscribe popup
     function closePopup() {
         $("#popupOverlay").removeClass("show");
         $("body").css("overflow", "");
@@ -242,9 +165,7 @@ function initHome() {
     $("#closePopup").on("click", closePopup);
 
     $("#popupOverlay").on("click", function (event) {
-        if (event.target === this) {
-            closePopup();
-        }
+        if (event.target === this) closePopup();
     });
 
     $(document).on("keydown", function (event) {
@@ -252,153 +173,158 @@ function initHome() {
 
         if (event.key === "Escape") {
             closePopup();
+            return;
         }
 
-        if (event.key === "Tab") {
-            const items = $("#popupOverlay")
-                .find("button:enabled, input:enabled")
-                .get();
+        if (event.key !== "Tab") return;
 
-            const first = items[0];
-            const last = items[items.length - 1];
+        const items = $("#popupOverlay")
+            .find("button:enabled, input:enabled")
+            .get();
 
-            if (event.shiftKey && document.activeElement === first) {
-                event.preventDefault();
-                last.focus();
-            } else if (
-                !event.shiftKey &&
-                document.activeElement === last
-            ) {
-                event.preventDefault();
-                first.focus();
-            }
+        if (!items.length) return;
+
+        if (event.shiftKey &&
+            document.activeElement === items[0]) {
+            event.preventDefault();
+            items[items.length - 1].focus();
+        } else if (
+            !event.shiftKey &&
+            document.activeElement === items[items.length - 1]
+        ) {
+            event.preventDefault();
+            items[0].focus();
         }
     });
 }
 
-// Countries: Read more
+// 4. READ MORE
 function initReadMore() {
     $(".read-more-btn").on("click", function () {
-        const extra = this.nextElementSibling;
-        const open = getComputedStyle(extra).display === "none";
+        const detail = $(this).next(".more-text");
+        const open = !detail.is(":visible");
 
-        extra.style.display = open ? "block" : "none";
-        this.textContent = open ? "Read less" : "Read more";
-        this.setAttribute("aria-expanded", String(open));
+        detail.stop(true, true).slideToggle(200);
+
+        $(this)
+            .text(open ? "Read less" : "Read more")
+            .attr("aria-expanded", String(open));
     });
 }
 
-// Dish ratings
+// 5. DISH RATINGS
 function initRatings() {
-    document.querySelectorAll(".gallery-item").forEach(function (card) {
-        const rating = document.createElement("div");
-        rating.className = "rating";
+    $(".gallery-item").each(function () {
+        const card = $(this);
+        const name = card.find("figcaption strong").text().trim();
+        const key = "rating_" + name;
 
-        const label = document.createElement("span");
-        label.className = "rating-value";
-        label.textContent = "Rate it";
+        const rating = $('<div class="rating"></div>');
+        const label = $('<span class="rating-value"></span>');
 
-        for (let i = 1; i <= 5; i++) {
-            const star = document.createElement("button");
-            star.type = "button";
-            star.className = "star";
-            star.textContent = "★";
-            star.dataset.value = i;
+        let saved = Number(localStorage.getItem(key)) || 0;
 
-            star.setAttribute("aria-label", "Rate " + i + " out of 5");
-            star.setAttribute("aria-pressed", "false");
+        function updateStars(value) {
+            rating.find(".star").each(function () {
+                const number = Number(this.dataset.value);
 
-            star.addEventListener("click", function () {
-                rating.querySelectorAll(".star").forEach(function (item) {
-                    item.classList.toggle(
-                        "active",
-                        Number(item.dataset.value) <= i
-                    );
-
-                    item.setAttribute(
-                        "aria-pressed",
-                        String(Number(item.dataset.value) === i)
-                    );
-                });
-
-                label.textContent = i + "/5";
-
-                card.classList.remove("pop");
-                void card.offsetWidth;
-                card.classList.add("pop");
-
-                playSound();
-                notifyUser("Your rating: " + i + "/5");
+                $(this)
+                    .toggleClass("active", number <= value)
+                    .attr("aria-pressed", String(number === value));
             });
 
-            rating.appendChild(star);
+            label.text(value ? value + "/5" : "Rate it");
         }
 
-        rating.appendChild(label);
-        card.appendChild(rating);
+        for (let i = 1; i <= 5; i++) {
+            $("<button>", {
+                type: "button",
+                class: "star",
+                text: "★"
+            })
+                .attr("data-value", i)
+                .attr("aria-label", `Rate ${name} ${i} out of 5`)
+                .on("click", function () {
+                    localStorage.setItem(key, String(i));
+
+                    updateStars(i);
+
+                    card.removeClass("pop");
+                    void card[0].offsetWidth;
+                    card.addClass("pop");
+
+                    notifyUser(`You rated ${name} ${i}/5`);
+                })
+                .appendTo(rating);
+        }
+
+        rating.append(label);
+        card.append(rating);
+
+        updateStars(saved);
     });
 }
 
-// Live search and autocomplete
+// 6. LIVE SEARCH AND AUTOCOMPLETE
 function initSearch() {
-    const $input = $("#dishSearch");
-    const $cards = $(".gallery-item");
+    const input = $("#dishSearch");
+    if (!input.length) return;
 
-    if (!$input.length) return;
+    const cards = $(".gallery-item");
+    const suggestions = $("#searchSuggestions");
 
-    const $suggestions = $("#searchSuggestions");
-
-    const names = $cards.map(function () {
+    const names = cards.map(function () {
         return $(this).find("figcaption strong").text().trim();
     }).get();
 
     function closeSuggestions() {
-        $suggestions.prop("hidden", true);
-        $input.attr("aria-expanded", "false");
+        suggestions.prop("hidden", true);
+        input.attr("aria-expanded", "false");
     }
 
     function highlight(element, query) {
-        const text = element.textContent;
-        element.replaceChildren();
-
-        let start = 0;
-        let index = query ? text.toLowerCase().indexOf(query) : -1;
-
-        while (index !== -1) {
-            element.append(
-                document.createTextNode(text.slice(start, index))
-            );
-
-            const mark = document.createElement("mark");
-            mark.textContent = text.slice(index, index + query.length);
-            element.append(mark);
-
-            start = index + query.length;
-            index = text.toLowerCase().indexOf(query, start);
+        if (!element.dataset.original) {
+            element.dataset.original = element.textContent;
         }
 
-        element.append(document.createTextNode(text.slice(start)));
+        const text = element.dataset.original;
+        element.replaceChildren();
+
+        const index = text.toLowerCase().indexOf(query);
+
+        if (!query || index === -1) {
+            element.textContent = text;
+            return;
+        }
+
+        const mark = document.createElement("mark");
+        mark.textContent = text.slice(index, index + query.length);
+
+        element.append(
+            document.createTextNode(text.slice(0, index)),
+            mark,
+            document.createTextNode(text.slice(index + query.length))
+        );
     }
 
-    function search(showSuggestions) {
-        const query = $input.val().trim().toLowerCase();
+    function search(showSuggestions = true) {
+        const query = input.val().trim().toLowerCase();
         let count = 0;
 
-        $cards.each(function () {
-            const match = $(this)
-                .find("figcaption")
-                .text()
+        cards.each(function () {
+            const card = $(this);
+
+            const name = card.find("figcaption strong").text();
+            const country = card.find("figcaption span").text();
+
+            const match = (name + " " + country)
                 .toLowerCase()
                 .includes(query);
 
-            $(this).toggle(match);
+            card.toggle(match);
+            if (match) count++;
 
-            if (match) {
-                count++;
-            }
-
-            $(this)
-                .find("figcaption strong, figcaption span")
+            card.find("figcaption strong, figcaption span")
                 .each(function () {
                     highlight(this, query);
                 });
@@ -406,67 +332,75 @@ function initSearch() {
 
         $("#searchCount").text(
             count
-                ? "Showing " + count + " of " + $cards.length + " dishes"
-                : "No dishes found."
+                ? `Showing ${count} of ${cards.length} dishes`
+                : "No matching dishes found."
         );
 
-        $suggestions.empty();
+        suggestions.empty();
 
-        const matches = names.filter(function (name) {
-            return query && name.toLowerCase().includes(query);
-        });
+        if (showSuggestions && query) {
+            names
+                .filter(name =>
+                    name.toLowerCase().includes(query)
+                )
+                .slice(0, 7)
+                .forEach(name => {
+                    const item = $("<li>");
 
-        matches.forEach(function (name) {
-            const $button = $('<button type="button">')
-                .text(name)
-                .on("click", function () {
-                    $input.val(name);
-                    search(false);
-                    $input.trigger("focus");
+                    $("<button>", {
+                        type: "button",
+                        text: name
+                    })
+                        .on("click", function () {
+                            input.val(name);
+                            search(false);
+                            input.trigger("focus");
+                        })
+                        .appendTo(item);
+
+                    suggestions.append(item);
                 });
+        }
 
-            $("<li>").append($button).appendTo($suggestions);
-        });
+        const open = suggestions.children().length > 0;
 
-        const open = Boolean(showSuggestions && matches.length);
-        $suggestions.prop("hidden", !open);
-        $input.attr("aria-expanded", String(open));
-
-        $(window).trigger("scroll");
+        suggestions.prop("hidden", !open);
+        input.attr("aria-expanded", String(open));
     }
 
-    $input.on("input", function () {
-        search(true);
-    });
+    input.on("input", () => search(true));
 
     $("#clearSearch").on("click", function () {
-        $input.val("");
+        input.val("");
         search(false);
-        $input.trigger("focus");
+        input.trigger("focus");
     });
 
     $(".search-panel").on("keydown", function (event) {
-        const buttons = $suggestions.find("button").get();
-        const index = buttons.indexOf(document.activeElement);
-
         if (event.key === "Escape") {
             closeSuggestions();
-            $input.trigger("focus");
+            input.trigger("focus");
+            return;
         }
 
-        if (
-            !$suggestions.prop("hidden") &&
-            buttons.length &&
-            ["ArrowDown", "ArrowUp"].includes(event.key)
-        ) {
-            event.preventDefault();
-
-            const next = event.key === "ArrowDown"
-                ? index + 1
-                : index - 1;
-
-            buttons[(next + buttons.length) % buttons.length].focus();
+        if (!["ArrowDown", "ArrowUp"].includes(event.key)) {
+            return;
         }
+
+        if (suggestions.prop("hidden")) return;
+
+        const buttons = suggestions.find("button").get();
+        if (!buttons.length) return;
+
+        event.preventDefault();
+
+        const index = buttons.indexOf(document.activeElement);
+
+        const next = event.key === "ArrowDown"
+            ? index + 1
+            : index - 1;
+
+        buttons[(next + buttons.length) % buttons.length].focus();
     });
 
     $(document).on("click", function (event) {
@@ -478,350 +412,566 @@ function initSearch() {
     search(false);
 }
 
-// Recipes: categories and clipboard
+// 7. RECIPE FILTERS AND COPY BUTTON
 function initRecipes() {
-    $(".filter-btn").on("click", function (event) {
-        if (event.originalEvent) {
-            playSound();
-        }
-
-        const category = this.dataset.filter;
-
-        $(".filter-btn").removeClass("active");
-        $(this).addClass("active");
+    function filterRecipes(category) {
+        $(".filter-btn")
+            .removeClass("active")
+            .filter(`[data-filter="${category}"]`)
+            .addClass("active");
 
         let count = 0;
 
         $(".recipe-box").each(function () {
-            const show =
-                category === "all" ||
+            const match = category === "all" ||
                 this.dataset.category === category;
 
-            $(this).toggle(show);
-
-            if (show) {
-                count++;
-            }
+            $(this).toggle(match);
+            if (match) count++;
         });
 
         $("#recipeCount").text(
-            "Showing " + count + " of " +
-            $(".recipe-box").length + " recipes"
+            `Showing ${count} of ${$(".recipe-box").length} recipes`
         );
+    }
 
-        $(window).trigger("scroll");
+    $(".filter-btn").on("click", function () {
+        filterRecipes(this.dataset.filter);
     });
 
-    $('.filter-btn[data-filter="all"]').trigger("click");
+    if ($(".filter-btn").length) {
+        filterRecipes("all");
+    }
 
     $(".copy-recipe").on("click", async function () {
-        const $button = $(this);
-        const $card = $button.closest(".recipe-box");
+        const button = $(this);
+        const card = button.closest(".recipe-box");
 
-        const ingredients = $card.find("ul li").map(function () {
-            return this.textContent.trim();
-        }).get();
+        const ingredients = card.find("ul li")
+            .map(function () {
+                return this.textContent.trim();
+            }).get();
 
-        const steps = $card.find("ol li").map(function (i) {
-            return (i + 1) + ". " + this.textContent.trim();
-        }).get();
+        const steps = card.find("ol li")
+            .map(function (index) {
+                return `${index + 1}. ${this.textContent.trim()}`;
+            }).get();
 
-        const text =
-            $card.find("h2").text().trim() +
-            "\n\nIngredients\n" +
-            ingredients.join("\n") +
-            "\n\nSteps\n" +
-            steps.join("\n");
+        const recipe = [
+            card.find("h2").text().trim(),
+            "",
+            "Ingredients",
+            ingredients.join("\n"),
+            "",
+            "Steps",
+            steps.join("\n")
+        ].join("\n");
 
         try {
-            await navigator.clipboard.writeText(text);
+            await navigator.clipboard.writeText(recipe);
 
-            $button
-                .text("✓ Copied")
-                .attr("title", "Copied to clipboard!");
+            button.text("✓ Copied");
+            card.find(".copy-feedback")
+                .text("Copied to clipboard!");
 
-            $card.find(".copy-feedback").text("Copied to clipboard!");
-            notifyUser("Recipe copied to clipboard!");
+            notifyUser("Recipe copied!");
 
-            clearTimeout($button.data("timer"));
-
-            $button.data("timer", setTimeout(function () {
-                $button.text("Copy recipe").removeAttr("title");
-                $card.find(".copy-feedback").text("");
-            }, 2500));
-
-        } catch (error) {
-            $card.find(".copy-feedback").text(
-                "Allow clipboard access. Use HTTPS or localhost."
+            setTimeout(function () {
+                button.text("Copy recipe");
+                card.find(".copy-feedback").text("");
+            }, 2000);
+        } catch {
+            card.find(".copy-feedback").text(
+                "Clipboard access requires HTTPS or localhost."
             );
         }
     });
 }
 
-// Restaurant objects and ratings
+// 8. RESTAURANT RATINGS
 function initRestaurants() {
     const ratings = [4.7, 4.5, 4.3, 4.6, 4.4, 4.2];
 
-    const restaurants = $(".restaurant-card").map(function (index) {
-        return {
-            element: this,
-            rating: ratings[index],
+    $(".restaurant-card").each(function (index) {
+        if (ratings[index] === undefined) return;
 
-            getStars: function () {
-                const full = Math.round(this.rating);
-                return "★".repeat(full) + "☆".repeat(5 - full);
-            }
-        };
-    }).get();
+        if ($(this).find(".restaurant-rating").length) return;
 
-    restaurants.forEach(function (restaurant) {
-        $("<p>")
-            .addClass("restaurant-rating")
-            .text(restaurant.getStars() + " " + restaurant.rating)
-            .appendTo($(restaurant.element).find(".card-body"));
+        $("<p>", {
+            class: "restaurant-rating",
+            text: `Sample rating: ${ratings[index]}/5`
+        }).appendTo($(this).find(".card-body"));
     });
 }
 
-// Forms: validation, steps and loading spinner
-function initForms() {
-    const $contact = $("#contactForm");
-    let step = 1;
+// 9. FORM VALIDATION
+function showError(input, message) {
+    const field = $(input);
 
-    function showStep(number) {
-        step = number;
+    const anchor = field.closest(".input-group").length
+        ? field.closest(".input-group")
+        : field;
 
-        $contact.find(".form-step")
-            .removeClass("active")
-            .filter('[data-step="' + number + '"]')
-            .addClass("active");
+    let error = anchor.next(".field-error");
 
-        $("#stepIndicator").text("Step " + number + " of 2");
+    if (!error.length) {
+        error = $('<div class="field-error" role="alert"></div>');
+        error.insertAfter(anchor);
     }
 
-    function validateFields($fields) {
-        let valid = true;
+    error.text(message);
 
-        $fields.each(function () {
-            this.setCustomValidity("");
+    field
+        .toggleClass("is-invalid", Boolean(message))
+        .attr("aria-invalid", String(Boolean(message)));
+}
 
-            if (
-                this.required &&
-                this.type !== "checkbox" &&
-                !this.value.trim()
-            ) {
-                this.setCustomValidity("Please complete this field.");
-            }
+function validateFields(form, ids) {
+    let valid = true;
+    let firstInvalid = null;
 
-            if (
-                this.type === "email" &&
-                this.value &&
-                !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.value)
-            ) {
-                this.setCustomValidity("Enter a valid email address.");
-            }
+    ids.forEach(id => {
+        const input = form.querySelector("#" + id);
+        if (!input) return;
 
-            if (
-                this.minLength > 0 &&
-                this.value.trim().length < this.minLength
-            ) {
-                this.setCustomValidity(
-                    "Enter at least " + this.minLength + " characters."
-                );
-            }
+        const value = input.type === "checkbox"
+            ? input.checked
+            : input.value.trim();
 
-            if (
-                this.id === "regConfirm" &&
-                this.value !== $("#regPassword").val()
-            ) {
-                this.setCustomValidity("Passwords do not match.");
-            }
+        let error = "";
 
-            const correct = this.checkValidity();
-
-            $(this).toggleClass("is-invalid", !correct);
-
-            if (!correct) {
-                valid = false;
-            }
-        });
-
-        if (!valid) {
-            $fields.filter(".is-invalid").first()[0].reportValidity();
-        }
-
-        return valid;
-    }
-
-    $("#nextBtn").on("click", function () {
-        const $fields = $contact.find('[data-step="1"] input');
-
-        if (validateFields($fields)) {
-            showStep(2);
-        }
-    });
-
-    $("#backBtn").on("click", function () {
-        showStep(1);
-    });
-
-    $contact.on("keydown", function (event) {
-        if (
-            event.key === "Enter" &&
-            step === 1 &&
-            event.target.tagName === "INPUT"
+        if (!value) {
+            error = "This field is required.";
+        } else if (
+            ["email", "subEmail", "regEmail", "loginEmail"].includes(id) &&
+            !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
         ) {
-            event.preventDefault();
-            $("#nextBtn").trigger("click");
+            error = "Enter a valid email address.";
+        } else if (
+            ["phone", "regPhone"].includes(id) &&
+            !/^\+?[0-9]{10,15}$/.test(
+                value.replace(/[\s()-]/g, "")
+            )
+        ) {
+            error = "Enter a valid phone number.";
+        } else if (
+            id === "regPassword" &&
+            !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{8,}$/.test(value)
+        ) {
+            error = "Use 8+ characters, uppercase, lowercase, number and symbol.";
+        } else if (
+            id === "regConfirm" &&
+            value !== $("#regPassword").val()
+        ) {
+            error = "Passwords do not match.";
+        } else if (
+            id === "message" &&
+            value.length < 10
+        ) {
+            error = "Enter at least 10 characters.";
+        }
+
+        showError(input, error);
+
+        if (error) {
+            valid = false;
+            if (!firstInvalid) firstInvalid = input;
         }
     });
 
-    $("form input, form select, form textarea").on(
+    if (firstInvalid) firstInvalid.focus();
+
+    return valid;
+}
+
+function simulateSubmit(form, message) {
+    const button = $(form).find('[type="submit"]');
+    const original = button.html();
+
+    button
+        .prop("disabled", true)
+        .html(
+            '<span class="loading-spinner" aria-hidden="true"></span>' +
+            " Please wait..."
+        );
+
+    setTimeout(function () {
+        form.reset();
+
+        button.prop("disabled", false).html(original);
+
+        $(form).find(".field-error").text("");
+        $(form).find(".is-invalid")
+            .removeClass("is-invalid");
+
+        $(form).find(".form-success").text(message);
+        notifyUser(message);
+    }, 1000);
+}
+
+function initForms() {
+    $("form").attr("novalidate", "novalidate");
+
+    $("form").on(
         "input change",
+        "input, select, textarea",
         function () {
-            this.setCustomValidity("");
-            $(this).removeClass("is-invalid");
+            showError(this, "");
             $(this.form).find(".form-success").text("");
         }
     );
 
-    $("#contactForm, #registerForm, #subscribeForm")
-        .on("reset", function () {
-            $(this).find("input, select, textarea").each(function () {
-                this.setCustomValidity("");
-            });
+    const contact = document.getElementById("contactForm");
 
-            $(this).find(".is-invalid").removeClass("is-invalid");
-            $(this).find(".form-success").text("");
+    if (contact) {
+        let step = 1;
 
-            if (this.id === "contactForm") {
-                showStep(1);
+        function showStep(number) {
+            step = number;
+
+            $(contact).find(".form-step")
+                .removeClass("active")
+                .filter(`[data-step="${number}"]`)
+                .addClass("active");
+
+            $("#stepIndicator").text(`Step ${number} of 2`);
+        }
+
+        $("#nextBtn").on("click", function () {
+            if (validateFields(contact, [
+                "name", "email", "phone"
+            ])) {
+                showStep(2);
             }
-        })
-        .on("submit", function (event) {
+        });
+
+        $("#backBtn").on("click", () => showStep(1));
+
+        $(contact).on("submit", function (event) {
             event.preventDefault();
 
-            const form = this;
-            const $form = $(this);
-
-            if ($form.data("busy")) return;
-
-            if (form.id === "contactForm" && step === 1) {
+            if (step === 1) {
                 $("#nextBtn").trigger("click");
                 return;
             }
 
-            if (!validateFields($form.find("input, select, textarea"))) {
+            if (!validateFields(contact, [
+                "name", "email", "phone"
+            ])) {
+                showStep(1);
                 return;
             }
 
-            $form.data("busy", true).attr("aria-busy", "true");
+            if (validateFields(contact, [
+                "cuisine", "message", "confirm"
+            ])) {
+                simulateSubmit(
+                    contact,
+                    "Recommendation submitted successfully!"
+                );
 
-            const $button = $form.find('[type="submit"]');
-            const label = $button.html();
-
-            const $controls = $form
-                .find("input, select, textarea, button")
-                .filter(":enabled");
-
-            $controls.prop("disabled", true);
-
-            $button.html(
-                '<span class="loading-spinner" aria-hidden="true"></span>' +
-                " Please wait…"
-            );
-
-            setTimeout(function () {
-                $controls.prop("disabled", false);
-                $button.html(label);
-
-                $form.data("busy", false).removeAttr("aria-busy");
-
-                form.reset();
-
-                const message =
-                    "Demo completed successfully. " +
-                    "No data was sent to a server.";
-
-                $form.find(".form-success").text(message);
-                notifyUser(message);
-            }, 1200);
+                setTimeout(() => showStep(1), 1010);
+            }
         });
-}
 
-// Scroll progress, counters and lazy loading
-function initScroll() {
-    function inView(element) {
-        const rect = element.getBoundingClientRect();
+        $(contact).on("reset", () => {
+            setTimeout(() => showStep(1), 0);
+        });
 
-        return (
-            $(element).is(":visible") &&
-            rect.top < innerHeight &&
-            rect.bottom > 0
-        );
+        $(contact).on("keydown", "input", function (event) {
+            if (event.key === "Enter" && step === 1) {
+                event.preventDefault();
+                $("#nextBtn").trigger("click");
+            }
+        });
     }
 
-    function update() {
+    $("#subscribeForm").on("submit", function (event) {
+        event.preventDefault();
+
+        if (validateFields(this, ["subEmail"])) {
+            simulateSubmit(this, "Subscribed successfully!");
+        }
+    });
+
+    $("#registerForm").on("submit", function (event) {
+        event.preventDefault();
+
+        if (!validateFields(this, [
+            "regName",
+            "regEmail",
+            "regPhone",
+            "regPassword",
+            "regConfirm"
+        ])) return;
+
+        const user = {
+            name: $("#regName").val().trim(),
+            email: $("#regEmail").val().trim().toLowerCase(),
+            phone: $("#regPhone").val()?.trim() || "",
+            password: $("#regPassword").val()
+        };
+
+        // Classroom demo only; never use a real password.
+        try {
+            localStorage.setItem(USER_KEY, JSON.stringify(user));
+            $(this).find(".form-success")
+                .text("Demo account created successfully.");
+            notifyUser("Account created!");
+        } catch {
+            $(this).find(".form-success")
+                .text("Browser storage is unavailable.");
+        }
+    });
+
+    $("#loginForm").on("submit", function (event) {
+        event.preventDefault();
+
+        if (!validateFields(this, [
+            "loginEmail", "loginPassword"
+        ])) return;
+
+        const user = readStorage(USER_KEY);
+
+        const email = $("#loginEmail")
+            .val().trim().toLowerCase();
+
+        const password = $("#loginPassword").val();
+
+        if (!user ||
+            user.email !== email ||
+            user.password !== password) {
+            $(this).find(".form-success")
+                .text("Incorrect email or password.");
+            return;
+        }
+
+        localStorage.setItem(SESSION_KEY, user.email);
+        window.location.href = "profile.html";
+    });
+}
+
+// 10. PROFILE
+function initProfile() {
+    if (!$("#profileName").length) return;
+
+    const user = readStorage(USER_KEY);
+    const session = localStorage.getItem(SESSION_KEY);
+
+    if (!user || session !== user.email) {
+        window.location.replace("login.html");
+        return;
+    }
+
+    $("#profileName").text(user.name);
+    $("#profileEmail").text(user.email);
+    $("#profilePhone").text(user.phone || "Not provided");
+
+    $("#logoutBtn").on("click", function () {
+        localStorage.removeItem(SESSION_KEY);
+        window.location.href = "index.html";
+    });
+}
+
+// 11. EXTERNAL RECIPE API
+function initMealAPI() {
+    const form = document.getElementById("mealSearchForm");
+    if (!form) return;
+
+    const results = document.getElementById("apiResults");
+    const status = document.getElementById("apiStatus");
+
+    form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const query = document
+            .getElementById("mealQuery").value.trim();
+
+        results.replaceChildren();
+
+        if (!query) {
+            status.textContent = "Enter a dish name.";
+            return;
+        }
+
+        const button = form.querySelector('button[type="submit"]');
+        button.disabled = true;
+
+        status.textContent = "Loading recipes...";
+
+        try {
+            const url =
+                "https://www.themealdb.com/api/json/v1/1/search.php?s=" +
+                encodeURIComponent(query);
+
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                throw new Error("API error");
+            }
+
+            const data = await response.json();
+            const meals = (data.meals || []).slice(0, 3);
+
+            if (!meals.length) {
+                status.textContent = "No matching recipes found.";
+                return;
+            }
+
+            status.textContent =
+                `Showing ${meals.length} recipes.`;
+
+            meals.forEach(meal => {
+                const card = document.createElement("article");
+                card.className = "card p-3 api-meal";
+
+                const image = document.createElement("img");
+                image.src = meal.strMealThumb;
+                image.alt = meal.strMeal;
+                image.loading = "lazy";
+                image.decoding = "async";
+                image.className = "recipe-image mb-3";
+
+                const title = document.createElement("h3");
+                title.className = "h5";
+                title.textContent = meal.strMeal;
+
+                const country = document.createElement("p");
+                country.textContent =
+                    `${meal.strArea || "International"} cuisine`;
+
+                const description = document.createElement("p");
+                description.textContent =
+                    (meal.strInstructions || "").slice(0, 450) + "...";
+
+                card.append(image, title, country, description);
+                results.append(card);
+            });
+        } catch {
+            status.textContent =
+                "Could not load recipes. Try again.";
+        } finally {
+            button.disabled = false;
+        }
+    });
+}
+
+// 12. IMAGE LAZY LOADING
+function initLazyImages() {
+    const fallback =
+        "data:image/svg+xml;charset=UTF-8," +
+        encodeURIComponent(
+            '<svg xmlns="http://www.w3.org/2000/svg" ' +
+            'width="600" height="400">' +
+            '<rect width="100%" height="100%" fill="#e7e2da"/>' +
+            '<text x="50%" y="50%" text-anchor="middle" ' +
+            'font-size="24" fill="#555" font-family="Arial">' +
+            'Image unavailable</text></svg>'
+        );
+
+    function loadImage(image) {
+        if (!image.dataset.src) return;
+
+        image.src = image.dataset.src;
+        image.removeAttribute("data-src");
+    }
+
+    const images = document.querySelectorAll("img");
+
+    let observer = null;
+
+    if ("IntersectionObserver" in window) {
+        observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+
+                loadImage(entry.target);
+                observer.unobserve(entry.target);
+            });
+        }, {
+            rootMargin: "250px 0px"
+        });
+    }
+
+    images.forEach(image => {
+        image.addEventListener("error", function () {
+            if (this.dataset.fallbackUsed) return;
+
+            this.dataset.fallbackUsed = "true";
+            this.src = fallback;
+        });
+
+        if (image.dataset.src) {
+            image.src = fallback;
+
+            if (observer) {
+                observer.observe(image);
+            } else {
+                loadImage(image);
+            }
+        }
+    });
+}
+
+// 13. SCROLL PROGRESS AND COUNTERS
+function initScroll() {
+    function updateProgress() {
         const max =
-            document.documentElement.scrollHeight - innerHeight;
+            document.documentElement.scrollHeight -
+            window.innerHeight;
 
         const progress = max > 0
-            ? Math.min(100, Math.max(0, scrollY / max * 100))
+            ? Math.round(window.scrollY / max * 100)
             : 100;
 
         $("#scrollProgress")
             .css("width", progress + "%")
-            .attr("aria-valuenow", Math.round(progress));
+            .attr("aria-valuenow", progress);
+    }
 
-        $("img[data-src]").each(function () {
-            if (inView(this)) {
-                $(this)
-                    .attr("src", $(this).attr("data-src"))
-                    .removeAttr("data-src");
-            }
-        });
+    window.addEventListener("scroll", updateProgress, {
+        passive: true
+    });
 
-        $(".counter").each(function () {
-            const $counter = $(this);
+    window.addEventListener("resize", updateProgress);
 
-            if (!inView(this) || $counter.data("started")) {
-                return;
-            }
+    updateProgress();
 
-            $counter.data("started", true);
+    function animateCounter(element) {
+        if (element.dataset.started) return;
 
-            $({ value: 0 }).animate(
-                { value: Number($counter.attr("data-target")) },
-                {
-                    duration: 1400,
+        element.dataset.started = "true";
 
-                    step: function (value) {
-                        $counter.text(Math.floor(value));
-                    },
+        const target = Number(element.dataset.target) || 0;
 
-                    complete: function () {
-                        $counter.text($counter.attr("data-target"));
-                    }
+        $({ value: 0 }).animate(
+            { value: target },
+            {
+                duration: 1400,
+                step(value) {
+                    element.textContent = Math.floor(value);
+                },
+                complete() {
+                    element.textContent = target;
                 }
-            );
-        });
-    }
-
-    function showPlaceholder() {
-        if (!this.src.endsWith("/images/placeholder.svg")) {
-            this.src = "images/placeholder.svg";
-        }
-    }
-
-    $(window).on("scroll resize load", update);
-
-    $("img")
-        .on("load", update)
-        .on("error", showPlaceholder)
-        .each(function () {
-            if (this.complete && this.naturalWidth === 0) {
-                showPlaceholder.call(this);
             }
+        );
+    }
+
+    const counters = document.querySelectorAll(".counter");
+
+    if ("IntersectionObserver" in window) {
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+
+                animateCounter(entry.target);
+                observer.unobserve(entry.target);
+            });
         });
 
-    update();
+        counters.forEach(counter => observer.observe(counter));
+    } else {
+        counters.forEach(animateCounter);
+    }
 }

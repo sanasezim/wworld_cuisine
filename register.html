@@ -1,34 +1,34 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>World Cuisine | Sign up</title>
+    <title>World Cuisine | Sign Up</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
 
     <script src="https://code.jquery.com/jquery-4.0.0.min.js" defer></script>
     <script src="js/script.js" defer></script>
 </head>
-
 <body>
-<div id="scrollProgress" role="progressbar" aria-label="Page scroll progress"
-     aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
 
+<div id="scrollProgress" role="progressbar"
+     aria-label="Page scroll progress"
+     aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
 <div id="notification" role="status" aria-live="polite"></div>
 
 <nav class="navbar navbar-expand-lg navbar-dark world-navbar sticky-top">
     <div class="container">
         <a class="navbar-brand" href="index.html">World Cuisine</a>
-
         <button class="navbar-toggler" type="button"
                 data-bs-toggle="collapse" data-bs-target="#mainNavbar"
                 aria-controls="mainNavbar" aria-expanded="false"
                 aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-
         <div class="collapse navbar-collapse" id="mainNavbar">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
@@ -37,62 +37,88 @@
                 <li class="nav-item"><a class="nav-link" href="recipes.html">Recipes</a></li>
                 <li class="nav-item"><a class="nav-link" href="restaurants.html">Restaurants</a></li>
                 <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
-                <li class="nav-item"><a class="nav-link active" aria-current="page" href="register.html">Sign up</a></li>
+                <li class="nav-item"><a class="nav-link active" href="register.html">Sign up</a></li>
             </ul>
         </div>
     </div>
 </nav>
 
 <div class="container mt-3">
-    <button id="themeBtn" type="button" class="btn btn-outline-dark">Night mode</button>
+    <button id="themeBtn" type="button" class="btn btn-outline-dark">
+        Dark mode
+    </button>
 </div>
 
 <main class="container py-5">
     <div class="row justify-content-center">
-        <div class="col-lg-6 form-box p-4 p-md-5">
+        <section class="col-lg-6 form-box p-4 p-md-5">
             <h1>Create an account</h1>
-            <p>Join World Cuisine and share your favourite dishes.</p>
+            <p>Join World Cuisine and explore food from around the world.</p>
 
             <form id="registerForm" class="row g-3" novalidate>
                 <div class="col-12">
-                    <label for="regName" class="form-label">Name</label>
-                    <input id="regName" type="text" class="form-control" required>
+                    <label for="regName" class="form-label">Full name</label>
+                    <input id="regName" type="text"
+                           class="form-control" autocomplete="name">
                 </div>
 
                 <div class="col-12">
                     <label for="regEmail" class="form-label">Email</label>
-                    <input id="regEmail" type="email" class="form-control" required>
+                    <input id="regEmail" type="text" inputmode="email"
+                           class="form-control" autocomplete="email">
+                </div>
+
+                <div class="col-12">
+                    <label for="regPhone" class="form-label">Phone number</label>
+                    <input id="regPhone" type="tel"
+                           class="form-control" placeholder="+77001234567"
+                           autocomplete="tel">
                 </div>
 
                 <div class="col-12">
                     <label for="regPassword" class="form-label">Password</label>
                     <input id="regPassword" type="password"
-                           class="form-control" minlength="8" required>
-                    <div class="form-text">At least 8 characters.</div>
+                           class="form-control" autocomplete="new-password">
+                    <div class="form-text">
+                        At least 8 characters, including uppercase,
+                        lowercase, a number and a symbol.
+                    </div>
                 </div>
 
                 <div class="col-12">
-                    <label for="regConfirm" class="form-label">Confirm password</label>
-                    <input id="regConfirm" type="password" class="form-control" required>
+                    <label for="regConfirm" class="form-label">
+                        Confirm password
+                    </label>
+                    <input id="regConfirm" type="password"
+                           class="form-control" autocomplete="new-password">
                 </div>
 
                 <div class="col-12">
-                    <button type="submit" class="btn btn-dark">Register</button>
+                    <button type="submit" class="btn btn-dark">
+                        Create account
+                    </button>
                 </div>
 
-                <p class="form-text">Demo registration. No account is created.</p>
                 <p class="form-success" role="status"></p>
             </form>
-        </div>
+
+            <p class="mt-4">
+                Already registered?
+                <a href="login.html">Log in</a>
+            </p>
+
+            <small class="text-secondary">
+                Classroom demonstration. Do not use a real password.
+            </small>
+        </section>
     </div>
 </main>
 
 <footer class="world-footer py-4 mt-5">
     <div class="container text-center">
-        <p class="text-white mb-1">
-            Team: Toretay Ali, Kassym Mansur, Mukhametsharip Aibyn
+        <p class="text-white mb-0">
+            World Cuisine | Web Technologies
         </p>
-        <p class="text-white-50 mb-0">SE-2504 | World Cuisine | Assignment 6</p>
     </div>
 </footer>
 
