@@ -1,5 +1,8 @@
-
 "use strict";
+
+const USER_KEY = "wc_demo_user";
+const SESSION_KEY = "wc_demo_session";
+const THEME_KEY = "theme";
 
 $(function () {
     initTheme();
@@ -17,11 +20,41 @@ $(function () {
     initScroll();
 });
 
-const USER_KEY = "wc_demo_user";
-const SESSION_KEY = "wc_demo_session";
+// ==========================================
+// 1. HELPERS
+// ==========================================
+
+function getStoredValue(key) {
+    try {
+        return localStorage.getItem(key);
+    } catch {
+        return null;
+    }
+}
+
+function saveStoredValue(key, value) {
+    try {
+        localStorage.setItem(key, value);
+        return true;
+    } catch {
+        return false;
+    }
+}
+
+function readStorage(key) {
+    try {
+        return JSON.parse(getStoredValue(key) || "null");
+    } catch {
+        return null;
+    }
+}
 
 function notifyUser(message) {
-    $("#notification")
+    const notification = $("#notification");
+
+    if (!notification.length) return;
+
+    notification
         .stop(true, true)
         .text(message)
         .fadeIn(150)
@@ -29,21 +62,31 @@ function notifyUser(message) {
         .fadeOut(300);
 }
 
-function readStorage(key) {
-    try {
-        return JSON.parse(localStorage.getItem(key) || "null");
-    } catch {
-        return null;
-    }
+function showFormStatus(form, message, isError = false) {
+    const status = $(form).find(".form-success");
+
+    status
+        .toggleClass("form-error", isError)
+        .text(message)
+        .css("color", isError
+            ? (document.body.classList.contains("night")
+                ? "#ff9999" : "#b42318")
+            : "");
 }
 
-// 1. NIGHT MODE
+// ==========================================
+// 2. LIGHT / DARK MODE
+// ==========================================
+
 function initTheme() {
-    const savedTheme = localStorage.getItem("theme");
+    const savedTheme = getStoredValue(THEME_KEY);
 
-    $("body").toggleClass("night", savedTheme === "night");
+    $("body").toggleClass(
+        "night",
+        savedTheme === "night"
+    );
 
-    function updateButton() {
+    function updateThemeButton() {
         const isNight = $("body").hasClass("night");
 
         $("#themeBtn")
@@ -51,71 +94,138 @@ function initTheme() {
             .attr("aria-pressed", String(isNight));
     }
 
-    updateButton();
+    updateThemeButton();
 
     $("#themeBtn").on("click", function () {
         $("body").toggleClass("night");
+
+        // Remove custom background if it was changed
         document.body.style.backgroundColor = "";
 
         const theme = $("body").hasClass("night")
             ? "night"
             : "day";
 
-        localStorage.setItem("theme", theme);
-        updateButton();
+        saveStoredValue(THEME_KEY, theme);
+        updateThemeButton();
     });
 }
 
-// 2. NAVIGATION (NO LOGIN BUTTON)
+// ==========================================
+// 3. NAVIGATION
+// ==========================================
+
 function initNavigation() {
-    $(".navbar-nav a[href='login.html']")
-        .closest("li")
-        .remove();
+    const nav = $(".navbar-nav");
 
-    const links = $(".navbar-nav .nav-link").get();
+    // Hide Log In from the top menu
+    nav.find('a[href="login.html"]').closest("li").remove();
 
-    links.forEach((link, index) => {
-        link.addEventListener("keydown", function (event) {
-            let next;
+    // Show Profile after login
+    const user = readStorage(USER_KEY);
+    const session = getStoredValue(SESSION_KEY);
 
-            if (event.key === "ArrowRight" ||
-                event.key === "ArrowDown") {
-                next = (index + 1) % links.length;
-            } else if (
-                event.key === "ArrowLeft" ||
-                event.key === "ArrowUp"
-            ) {
-                next = (index - 1 + links.length) % links.length;
-            } else if (event.key === "Home") {
-                next = 0;
-            } else if (event.key === "End") {
-                next = links.length - 1;
-            } else {
-                return;
-            }
+    if (
+        user &&
+        session === user.email &&
+        !nav.find('a[href="profile.html"]').length
+    ) {
+        nav.append(
+            '<li class="nav-item">' +
+            '<a class="nav-link" href="profile.html">Profile</a>' +
+            '</li>'
+        );
+    }
 
-            event.preventDefault();
-            links[next].focus();
+    // Arrow key navigation across the whole page
+    document.addEventListener("keydown", function (event) {
+        const nextKeys = ["ArrowDown", "ArrowRight"];
+        const previousKeys = ["ArrowUp", "ArrowLeft"];
+
+        if (
+            !nextKeys.includes(event.key) &&
+            !previousKeys.includes(event.key)
+        ) return;
+
+        if (event.ctrlKey || event.metaKey || event.altKey) return;
+
+        // Preserve normal arrow behavior inside form fields
+        if (
+            event.target.closest(
+                "input, textarea, select, [contenteditable='true']"
+            )
+        ) return;
+
+        // Only focus visible interactive elements
+        const popup = document.querySelector("#popupOverlay.show");
+        const container = popup || document;
+
+        const elements = Array.from(
+            container.querySelectorAll(
+                "a[href], button, input, select, textarea, " +
+                "[tabindex]:not([tabindex='-1'])"
+            )
+        ).filter(element => {
+            return (
+                !element.disabled &&
+                element.tabIndex >= 0 &&
+                element.getClientRects().length > 0 &&
+                getComputedStyle(element).visibility !== "hidden" &&
+                !element.closest("[inert], [aria-hidden='true']")
+            );
+        });
+
+        if (!elements.length) return;
+
+        event.preventDefault();
+
+        const current = elements.indexOf(document.activeElement);
+        const forward = nextKeys.includes(event.key);
+
+        let next;
+
+        if (current === -1) {
+            next = forward ? 0 : elements.length - 1;
+        } else {
+            next = forward
+                ? (current + 1) % elements.length
+                : (current - 1 + elements.length) % elements.length;
+        }
+
+        elements[next].focus({ preventScroll: true });
+
+        elements[next].scrollIntoView({
+            behavior: "smooth",
+            block: "nearest"
         });
     });
 }
 
-// 3. HOME PAGE
+
+// ==========================================
+// 4. HOME PAGE
+// ==========================================
+
 function initHome() {
-    // Current date and time
+
+    // Current Date and Time
     function updateTime() {
         const element = document.getElementById("datetime");
+
         if (!element) return;
 
-        element.textContent = new Date().toLocaleString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-            hour12: false
-        });
+        element.textContent = new Date().toLocaleString(
+            "en-US",
+            {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: false
+            }
+        );
     }
 
     updateTime();
@@ -124,7 +234,7 @@ function initHome() {
         setInterval(updateTime, 1000);
     }
 
-    // Background colors
+    // Change background
     let colorIndex = 0;
 
     $("#colorBtn").on("click", function () {
@@ -132,44 +242,54 @@ function initHome() {
             ? ["#15161a", "#292129", "#172a24"]
             : ["#fde8e0", "#e3f2e1", "#e0ecfb"];
 
-        $("body").css(
-            "background-color",
-            colors[colorIndex++ % colors.length]
-        );
+        document.body.style.backgroundColor =
+            colors[colorIndex % colors.length];
+
+        colorIndex++;
     });
 
-    // FAQ
+    // FAQ accordion
     $(".faq-question").on("click", function () {
-        const open = $(this).attr("aria-expanded") !== "true";
+        const open =
+            $(this).attr("aria-expanded") !== "true";
 
-        $(this).attr("aria-expanded", String(open));
+        $(this).attr(
+            "aria-expanded",
+            String(open)
+        );
 
-        $(this).next(".faq-answer")
+        $(this)
+            .next(".faq-answer")
             .stop(true, true)
             .slideToggle(200);
     });
 
-    // Subscribe popup
+    // Subscription popup
+    const overlay = $("#popupOverlay");
+
     function closePopup() {
-        $("#popupOverlay").removeClass("show");
+        overlay.removeClass("show");
         $("body").css("overflow", "");
         $("#openPopup").trigger("focus");
     }
 
     $("#openPopup").on("click", function () {
-        $("#popupOverlay").addClass("show");
+        overlay.addClass("show");
         $("body").css("overflow", "hidden");
+
         $("#subEmail").trigger("focus");
     });
 
     $("#closePopup").on("click", closePopup);
 
-    $("#popupOverlay").on("click", function (event) {
-        if (event.target === this) closePopup();
+    overlay.on("click", function (event) {
+        if (event.target === this) {
+            closePopup();
+        }
     });
 
     $(document).on("keydown", function (event) {
-        if (!$("#popupOverlay").hasClass("show")) return;
+        if (!overlay.hasClass("show")) return;
 
         if (event.key === "Escape") {
             closePopup();
@@ -178,33 +298,43 @@ function initHome() {
 
         if (event.key !== "Tab") return;
 
-        const items = $("#popupOverlay")
-            .find("button:enabled, input:enabled")
-            .get();
+        const items = overlay.find(
+            "button:enabled, input:enabled"
+        ).get();
 
         if (!items.length) return;
 
-        if (event.shiftKey &&
-            document.activeElement === items[0]) {
-            event.preventDefault();
-            items[items.length - 1].focus();
-        } else if (
-            !event.shiftKey &&
-            document.activeElement === items[items.length - 1]
+        const first = items[0];
+        const last = items[items.length - 1];
+
+        if (
+            event.shiftKey &&
+            document.activeElement === first
         ) {
             event.preventDefault();
-            items[0].focus();
+            last.focus();
+        } else if (
+            !event.shiftKey &&
+            document.activeElement === last
+        ) {
+            event.preventDefault();
+            first.focus();
         }
     });
 }
 
-// 4. READ MORE
+// ==========================================
+// 5. COUNTRIES - READ MORE
+// ==========================================
+
 function initReadMore() {
     $(".read-more-btn").on("click", function () {
-        const detail = $(this).next(".more-text");
-        const open = !detail.is(":visible");
+        const details = $(this).next(".more-text");
+        const open = !details.is(":visible");
 
-        detail.stop(true, true).slideToggle(200);
+        details
+            .stop(true, true)
+            .slideToggle(200);
 
         $(this)
             .text(open ? "Read less" : "Read more")
@@ -212,17 +342,26 @@ function initReadMore() {
     });
 }
 
-// 5. DISH RATINGS
+// ==========================================
+// 6. DISH RATINGS
+// ==========================================
+
 function initRatings() {
     $(".gallery-item").each(function () {
         const card = $(this);
-        const name = card.find("figcaption strong").text().trim();
-        const key = "rating_" + name;
 
-        const rating = $('<div class="rating"></div>');
+        if (card.find(".rating").length) return;
+
+        const name = card
+            .find("figcaption strong")
+            .text()
+            .trim();
+
+        const key = "rating_" + name;
+        const rating = $('<div class="rating" role="group"></div>');
         const label = $('<span class="rating-value"></span>');
 
-        let saved = Number(localStorage.getItem(key)) || 0;
+        const saved = Number(getStoredValue(key)) || 0;
 
         function updateStars(value) {
             rating.find(".star").each(function () {
@@ -230,10 +369,13 @@ function initRatings() {
 
                 $(this)
                     .toggleClass("active", number <= value)
-                    .attr("aria-pressed", String(number === value));
+                    .attr(
+                        "aria-pressed",
+                        String(number === value)
+                    );
             });
 
-            label.text(value ? value + "/5" : "Rate it");
+            label.text(value ? `${value}/5` : "Rate it");
         }
 
         for (let i = 1; i <= 5; i++) {
@@ -243,9 +385,12 @@ function initRatings() {
                 text: "★"
             })
                 .attr("data-value", i)
-                .attr("aria-label", `Rate ${name} ${i} out of 5`)
+                .attr(
+                    "aria-label",
+                    `Rate ${name} ${i} out of 5`
+                )
                 .on("click", function () {
-                    localStorage.setItem(key, String(i));
+                    saveStoredValue(key, String(i));
 
                     updateStars(i);
 
@@ -253,7 +398,9 @@ function initRatings() {
                     void card[0].offsetWidth;
                     card.addClass("pop");
 
-                    notifyUser(`You rated ${name} ${i}/5`);
+                    notifyUser(
+                        `You rated ${name} ${i}/5`
+                    );
                 })
                 .appendTo(rating);
         }
@@ -265,21 +412,32 @@ function initRatings() {
     });
 }
 
-// 6. LIVE SEARCH AND AUTOCOMPLETE
+// ==========================================
+// 7. LIVE SEARCH AND AUTOCOMPLETE
+// ==========================================
+
 function initSearch() {
     const input = $("#dishSearch");
+
     if (!input.length) return;
 
     const cards = $(".gallery-item");
     const suggestions = $("#searchSuggestions");
 
     const names = cards.map(function () {
-        return $(this).find("figcaption strong").text().trim();
+        return $(this)
+            .find("figcaption strong")
+            .text()
+            .trim();
     }).get();
 
     function closeSuggestions() {
         suggestions.prop("hidden", true);
-        input.attr("aria-expanded", "false");
+
+        input.attr(
+            "aria-expanded",
+            "false"
+        );
     }
 
     function highlight(element, query) {
@@ -287,53 +445,78 @@ function initSearch() {
             element.dataset.original = element.textContent;
         }
 
-        const text = element.dataset.original;
+        const original = element.dataset.original;
+        const index = query
+            ? original.toLowerCase().indexOf(query)
+            : -1;
+
         element.replaceChildren();
 
-        const index = text.toLowerCase().indexOf(query);
-
-        if (!query || index === -1) {
-            element.textContent = text;
+        if (index === -1) {
+            element.textContent = original;
             return;
         }
 
         const mark = document.createElement("mark");
-        mark.textContent = text.slice(index, index + query.length);
+
+        mark.textContent = original.slice(
+            index,
+            index + query.length
+        );
 
         element.append(
-            document.createTextNode(text.slice(0, index)),
+            document.createTextNode(
+                original.slice(0, index)
+            ),
             mark,
-            document.createTextNode(text.slice(index + query.length))
+            document.createTextNode(
+                original.slice(index + query.length)
+            )
         );
     }
 
     function search(showSuggestions = true) {
-        const query = input.val().trim().toLowerCase();
-        let count = 0;
+        const query = String(input.val())
+            .trim()
+            .toLowerCase();
+
+        let visible = 0;
 
         cards.each(function () {
             const card = $(this);
 
-            const name = card.find("figcaption strong").text();
-            const country = card.find("figcaption span").text();
+            const nameElement =
+                card.find("figcaption strong")[0];
 
-            const match = (name + " " + country)
-                .toLowerCase()
-                .includes(query);
+            const countryElement =
+                card.find("figcaption span")[0];
+
+            if (!nameElement || !countryElement) return;
+
+            const name =
+                nameElement.dataset.original ||
+                nameElement.textContent;
+
+            const country =
+                countryElement.dataset.original ||
+                countryElement.textContent;
+
+            const match = (
+                name + " " + country
+            ).toLowerCase().includes(query);
 
             card.toggle(match);
-            if (match) count++;
 
-            card.find("figcaption strong, figcaption span")
-                .each(function () {
-                    highlight(this, query);
-                });
+            if (match) visible++;
+
+            highlight(nameElement, query);
+            highlight(countryElement, query);
         });
 
         $("#searchCount").text(
-            count
-                ? `Showing ${count} of ${cards.length} dishes`
-                : "No matching dishes found."
+            visible
+                ? `Showing ${visible} of ${cards.length} dishes`
+                : "No matching dishes found. Try another name or country."
         );
 
         suggestions.empty();
@@ -362,13 +545,23 @@ function initSearch() {
                 });
         }
 
-        const open = suggestions.children().length > 0;
+        const hasSuggestions =
+            suggestions.children().length > 0;
 
-        suggestions.prop("hidden", !open);
-        input.attr("aria-expanded", String(open));
+        suggestions.prop(
+            "hidden",
+            !hasSuggestions
+        );
+
+        input.attr(
+            "aria-expanded",
+            String(hasSuggestions)
+        );
     }
 
-    input.on("input", () => search(true));
+    input.on("input", function () {
+        search(true);
+    });
 
     $("#clearSearch").on("click", function () {
         input.val("");
@@ -383,28 +576,37 @@ function initSearch() {
             return;
         }
 
-        if (!["ArrowDown", "ArrowUp"].includes(event.key)) {
+        if (
+            event.key !== "ArrowDown" &&
+            event.key !== "ArrowUp"
+        ) {
             return;
         }
 
         if (suggestions.prop("hidden")) return;
 
         const buttons = suggestions.find("button").get();
+
         if (!buttons.length) return;
 
         event.preventDefault();
 
-        const index = buttons.indexOf(document.activeElement);
+        const current =
+            buttons.indexOf(document.activeElement);
 
         const next = event.key === "ArrowDown"
-            ? index + 1
-            : index - 1;
+            ? current + 1
+            : current - 1;
 
-        buttons[(next + buttons.length) % buttons.length].focus();
+        buttons[
+            (next + buttons.length) % buttons.length
+        ].focus();
     });
 
     $(document).on("click", function (event) {
-        if (!$(event.target).closest(".search-panel").length) {
+        if (
+            !$(event.target).closest(".search-panel").length
+        ) {
             closeSuggestions();
         }
     });
@@ -412,21 +614,29 @@ function initSearch() {
     search(false);
 }
 
-// 7. RECIPE FILTERS AND COPY BUTTON
+// ==========================================
+// 8. RECIPE FILTERS AND COPY
+// ==========================================
+
 function initRecipes() {
+
     function filterRecipes(category) {
         $(".filter-btn")
             .removeClass("active")
-            .filter(`[data-filter="${category}"]`)
+            .filter(function () {
+                return this.dataset.filter === category;
+            })
             .addClass("active");
 
         let count = 0;
 
         $(".recipe-box").each(function () {
-            const match = category === "all" ||
+            const match =
+                category === "all" ||
                 this.dataset.category === category;
 
             $(this).toggle(match);
+
             if (match) count++;
         });
 
@@ -450,12 +660,14 @@ function initRecipes() {
         const ingredients = card.find("ul li")
             .map(function () {
                 return this.textContent.trim();
-            }).get();
+            })
+            .get();
 
         const steps = card.find("ol li")
             .map(function (index) {
                 return `${index + 1}. ${this.textContent.trim()}`;
-            }).get();
+            })
+            .get();
 
         const recipe = [
             card.find("h2").text().trim(),
@@ -471,6 +683,7 @@ function initRecipes() {
             await navigator.clipboard.writeText(recipe);
 
             button.text("✓ Copied");
+
             card.find(".copy-feedback")
                 .text("Copied to clipboard!");
 
@@ -478,8 +691,10 @@ function initRecipes() {
 
             setTimeout(function () {
                 button.text("Copy recipe");
+
                 card.find(".copy-feedback").text("");
             }, 2000);
+
         } catch {
             card.find(".copy-feedback").text(
                 "Clipboard access requires HTTPS or localhost."
@@ -488,38 +703,68 @@ function initRecipes() {
     });
 }
 
-// 8. RESTAURANT RATINGS
+// ==========================================
+// 9. RESTAURANT RATINGS
+// ==========================================
+
 function initRestaurants() {
+    // Demo ratings, not actual customer reviews
     const ratings = [4.7, 4.5, 4.3, 4.6, 4.4, 4.2];
 
     $(".restaurant-card").each(function (index) {
         if (ratings[index] === undefined) return;
 
-        if ($(this).find(".restaurant-rating").length) return;
+        if (
+            $(this).find(".restaurant-rating").length
+        ) {
+            return;
+        }
 
         $("<p>", {
             class: "restaurant-rating",
             text: `Sample rating: ${ratings[index]}/5`
-        }).appendTo($(this).find(".card-body"));
+        }).appendTo(
+            $(this).find(".card-body")
+        );
     });
 }
 
-// 9. FORM VALIDATION
+// ==========================================
+// 10. FORM VALIDATION
+// ==========================================
+
 function showError(input, message) {
     const field = $(input);
 
-    const anchor = field.closest(".input-group").length
-        ? field.closest(".input-group")
-        : field;
+    let anchor = field;
+
+    if (input.type === "checkbox") {
+        anchor = field.closest(".form-check");
+    } else if (field.closest(".input-group").length) {
+        anchor = field.closest(".input-group");
+    }
 
     let error = anchor.next(".field-error");
 
     if (!error.length) {
         error = $('<div class="field-error" role="alert"></div>');
+
+        error.css({
+            fontSize: "0.85rem",
+            marginTop: "5px"
+        });
+
         error.insertAfter(anchor);
     }
 
-    error.text(message);
+    error
+        .text(message)
+        .css(
+            "color",
+            document.body.classList.contains("night")
+                ? "#ff9999"
+                : "#b42318"
+        );
 
     field
         .toggleClass("is-invalid", Boolean(message))
@@ -530,9 +775,27 @@ function validateFields(form, ids) {
     let valid = true;
     let firstInvalid = null;
 
+    const emailRule =
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    const passwordRule =
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9\s]).{8,}$/;
+
     ids.forEach(id => {
         const input = form.querySelector("#" + id);
-        if (!input) return;
+
+        if (!input) {
+            console.error("Missing form field:", id);
+            valid = false;
+
+            showFormStatus(
+                form,
+                "A required form field is missing. Please check the page.",
+                true
+            );
+
+            return;
+        }
 
         const value = input.type === "checkbox"
             ? input.checked
@@ -542,50 +805,67 @@ function validateFields(form, ids) {
 
         if (!value) {
             error = "This field is required.";
+
         } else if (
-            ["email", "subEmail", "regEmail", "loginEmail"].includes(id) &&
-            !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+            ["email", "regEmail", "loginEmail", "subEmail"].includes(id) &&
+            !emailRule.test(value)
         ) {
-            error = "Enter a valid email address.";
+            error = "Please enter a valid email address.";
+
         } else if (
             ["phone", "regPhone"].includes(id) &&
             !/^\+?[0-9]{10,15}$/.test(
                 value.replace(/[\s()-]/g, "")
             )
         ) {
-            error = "Enter a valid phone number.";
+            error = "Enter a valid phone number (10-15 digits).";
+
         } else if (
-            id === "regPassword" &&
-            !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\w\s]).{8,}$/.test(value)
+            ["regPassword", "loginPassword"].includes(id) &&
+            !passwordRule.test(value)
         ) {
-            error = "Use 8+ characters, uppercase, lowercase, number and symbol.";
+            error = "Password needs 8+ characters, uppercase, lowercase, number and symbol.";
+
         } else if (
             id === "regConfirm" &&
             value !== $("#regPassword").val()
         ) {
             error = "Passwords do not match.";
+
         } else if (
             id === "message" &&
             value.length < 10
         ) {
-            error = "Enter at least 10 characters.";
+            error = "Write at least 10 characters.";
         }
 
         showError(input, error);
 
         if (error) {
             valid = false;
-            if (!firstInvalid) firstInvalid = input;
+
+            if (!firstInvalid) {
+                firstInvalid = input;
+            }
         }
     });
 
-    if (firstInvalid) firstInvalid.focus();
+    if (firstInvalid) {
+        firstInvalid.focus();
+    }
 
     return valid;
 }
 
-function simulateSubmit(form, message) {
+// ==========================================
+// 11. SUBMIT ANIMATION
+// ==========================================
+
+function simulateSubmit(form, message, onComplete) {
     const button = $(form).find('[type="submit"]');
+
+    if (button.prop("disabled")) return;
+
     const original = button.html();
 
     button
@@ -598,18 +878,34 @@ function simulateSubmit(form, message) {
     setTimeout(function () {
         form.reset();
 
-        button.prop("disabled", false).html(original);
+        button
+            .prop("disabled", false)
+            .html(original);
 
         $(form).find(".field-error").text("");
-        $(form).find(".is-invalid")
-            .removeClass("is-invalid");
 
-        $(form).find(".form-success").text(message);
+        $(form)
+            .find(".is-invalid")
+            .removeClass("is-invalid")
+            .attr("aria-invalid", "false");
+
+        showFormStatus(form, message);
         notifyUser(message);
-    }, 1000);
+
+        if (typeof onComplete === "function") {
+            onComplete();
+        }
+    }, 800);
 }
 
+// ==========================================
+// 12. ALL FORMS
+// ==========================================
+
 function initForms() {
+
+    // Disable browser validation.
+    // All validation is performed by JavaScript.
     $("form").attr("novalidate", "novalidate");
 
     $("form").on(
@@ -617,146 +913,262 @@ function initForms() {
         "input, select, textarea",
         function () {
             showError(this, "");
-            $(this.form).find(".form-success").text("");
+            showFormStatus(this.form, "");
         }
     );
+
+    $("form").on("reset", function () {
+        const form = this;
+
+        setTimeout(function () {
+            $(form).find(".field-error").text("");
+
+            $(form)
+                .find(".is-invalid")
+                .removeClass("is-invalid")
+                .attr("aria-invalid", "false");
+
+            showFormStatus(form, "");
+        }, 0);
+    });
+
+    // --------------------------------------
+    // CONTACT FORM - TWO STEPS
+    // --------------------------------------
 
     const contact = document.getElementById("contactForm");
 
     if (contact) {
-        let step = 1;
+        let currentStep = 1;
 
         function showStep(number) {
-            step = number;
+            currentStep = number;
 
-            $(contact).find(".form-step")
+            $(contact)
+                .find(".form-step")
                 .removeClass("active")
-                .filter(`[data-step="${number}"]`)
+                .filter(function () {
+                    return Number(this.dataset.step) === number;
+                })
                 .addClass("active");
 
-            $("#stepIndicator").text(`Step ${number} of 2`);
+            $("#stepIndicator").text(
+                `Step ${number} of 2`
+            );
         }
 
         $("#nextBtn").on("click", function () {
-            if (validateFields(contact, [
-                "name", "email", "phone"
-            ])) {
+            const valid = validateFields(
+                contact,
+                ["name", "email", "phone"]
+            );
+
+            if (valid) {
                 showStep(2);
             }
         });
 
-        $("#backBtn").on("click", () => showStep(1));
-
-        $(contact).on("submit", function (event) {
-            event.preventDefault();
-
-            if (step === 1) {
-                $("#nextBtn").trigger("click");
-                return;
-            }
-
-            if (!validateFields(contact, [
-                "name", "email", "phone"
-            ])) {
-                showStep(1);
-                return;
-            }
-
-            if (validateFields(contact, [
-                "cuisine", "message", "confirm"
-            ])) {
-                simulateSubmit(
-                    contact,
-                    "Recommendation submitted successfully!"
-                );
-
-                setTimeout(() => showStep(1), 1010);
-            }
-        });
-
-        $(contact).on("reset", () => {
-            setTimeout(() => showStep(1), 0);
+        $("#backBtn").on("click", function () {
+            showStep(1);
         });
 
         $(contact).on("keydown", "input", function (event) {
-            if (event.key === "Enter" && step === 1) {
+            if (
+                event.key === "Enter" &&
+                currentStep === 1
+            ) {
                 event.preventDefault();
                 $("#nextBtn").trigger("click");
             }
         });
+
+        $(contact).on("submit", function (event) {
+            event.preventDefault();
+
+            if (currentStep === 1) {
+                $("#nextBtn").trigger("click");
+                return;
+            }
+
+            // Validate Step 1 again
+            const personalValid = validateFields(
+                contact,
+                ["name", "email", "phone"]
+            );
+
+            if (!personalValid) {
+                showStep(1);
+                return;
+            }
+
+            // Validate Step 2
+            const detailsValid = validateFields(
+                contact,
+                ["cuisine", "message", "confirm"]
+            );
+
+            if (!detailsValid) return;
+
+            simulateSubmit(
+                contact,
+                "Recommendation submitted in demo mode.",
+                function () {
+                    showStep(1);
+                }
+            );
+        });
+
+        $(contact).on("reset", function () {
+            setTimeout(function () {
+                showStep(1);
+            }, 0);
+        });
+
+        showStep(1);
     }
+
+    // --------------------------------------
+    // SUBSCRIBE FORM
+    // --------------------------------------
 
     $("#subscribeForm").on("submit", function (event) {
         event.preventDefault();
 
-        if (validateFields(this, ["subEmail"])) {
-            simulateSubmit(this, "Subscribed successfully!");
+        if (!validateFields(this, ["subEmail"])) {
+            return;
         }
+
+        simulateSubmit(
+            this,
+            "Subscribed in demo mode!"
+        );
     });
+
+    // --------------------------------------
+    // SIGN UP
+    // --------------------------------------
 
     $("#registerForm").on("submit", function (event) {
         event.preventDefault();
 
-        if (!validateFields(this, [
+        const valid = validateFields(this, [
             "regName",
             "regEmail",
             "regPhone",
             "regPassword",
             "regConfirm"
-        ])) return;
+        ]);
+
+        if (!valid) return;
 
         const user = {
             name: $("#regName").val().trim(),
             email: $("#regEmail").val().trim().toLowerCase(),
-            phone: $("#regPhone").val()?.trim() || "",
+            phone: $("#regPhone").val().trim(),
             password: $("#regPassword").val()
         };
 
-        // Classroom demo only; never use a real password.
-        try {
-            localStorage.setItem(USER_KEY, JSON.stringify(user));
-            $(this).find(".form-success")
-                .text("Demo account created successfully.");
-            notifyUser("Account created!");
-        } catch {
-            $(this).find(".form-success")
-                .text("Browser storage is unavailable.");
+        // Classroom demonstration only.
+        // Never use a real password here.
+        const saved = saveStoredValue(
+            USER_KEY,
+            JSON.stringify(user)
+        );
+
+        if (!saved) {
+            showFormStatus(
+                this,
+                "Unable to save account. Enable browser storage.",
+                true
+            );
+            return;
         }
+
+        // Clear previous session
+        try {
+            localStorage.removeItem(SESSION_KEY);
+        } catch {}
+
+        showFormStatus(
+            this,
+            "Account created! Redirecting to Log In..."
+        );
+
+        notifyUser("Account created successfully!");
+
+        setTimeout(function () {
+            window.location.href = "login.html";
+        }, 600);
     });
+
+    // --------------------------------------
+    // LOG IN
+    // --------------------------------------
 
     $("#loginForm").on("submit", function (event) {
         event.preventDefault();
 
-        if (!validateFields(this, [
-            "loginEmail", "loginPassword"
-        ])) return;
+        const valid = validateFields(this, [
+            "loginEmail",
+            "loginPassword"
+        ]);
+
+        if (!valid) return;
 
         const user = readStorage(USER_KEY);
 
         const email = $("#loginEmail")
-            .val().trim().toLowerCase();
+            .val()
+            .trim()
+            .toLowerCase();
 
         const password = $("#loginPassword").val();
 
-        if (!user ||
+        if (
+            !user ||
             user.email !== email ||
-            user.password !== password) {
-            $(this).find(".form-success")
-                .text("Incorrect email or password.");
+            user.password !== password
+        ) {
+            showFormStatus(
+                this,
+                "Incorrect email or password.",
+                true
+            );
             return;
         }
 
-        localStorage.setItem(SESSION_KEY, user.email);
+        const saved = saveStoredValue(
+            SESSION_KEY,
+            user.email
+        );
+
+        if (!saved) {
+            showFormStatus(
+                this,
+                "Unable to start your session.",
+                true
+            );
+            return;
+        }
+
+        showFormStatus(
+            this,
+            "Login successful!"
+        );
+
         window.location.href = "profile.html";
     });
 }
 
-// 10. PROFILE
+// ==========================================
+// 13. PROFILE PAGE
+// ==========================================
+
 function initProfile() {
     if (!$("#profileName").length) return;
 
     const user = readStorage(USER_KEY);
-    const session = localStorage.getItem(SESSION_KEY);
+    const session = getStoredValue(SESSION_KEY);
 
     if (!user || session !== user.email) {
         window.location.replace("login.html");
@@ -765,37 +1177,54 @@ function initProfile() {
 
     $("#profileName").text(user.name);
     $("#profileEmail").text(user.email);
-    $("#profilePhone").text(user.phone || "Not provided");
+    $("#profilePhone").text(
+        user.phone || "Not provided"
+    );
 
     $("#logoutBtn").on("click", function () {
-        localStorage.removeItem(SESSION_KEY);
+        try {
+            localStorage.removeItem(SESSION_KEY);
+        } catch {}
+
         window.location.href = "index.html";
     });
 }
 
-// 11. EXTERNAL RECIPE API
+// ==========================================
+// 14. EXTERNAL API - THEMEALDB
+// ==========================================
+
 function initMealAPI() {
     const form = document.getElementById("mealSearchForm");
+
     if (!form) return;
 
     const results = document.getElementById("apiResults");
     const status = document.getElementById("apiStatus");
+    const input = document.getElementById("mealQuery");
+
+    if (!results || !status || !input) return;
 
     form.addEventListener("submit", async function (event) {
         event.preventDefault();
 
-        const query = document
-            .getElementById("mealQuery").value.trim();
+        const query = input.value.trim();
 
         results.replaceChildren();
 
         if (!query) {
             status.textContent = "Enter a dish name.";
+            input.focus();
             return;
         }
 
-        const button = form.querySelector('button[type="submit"]');
-        button.disabled = true;
+        const button = form.querySelector(
+            'button[type="submit"]'
+        );
+
+        if (button) {
+            button.disabled = true;
+        }
 
         status.textContent = "Loading recipes...";
 
@@ -807,100 +1236,156 @@ function initMealAPI() {
             const response = await fetch(url);
 
             if (!response.ok) {
-                throw new Error("API error");
+                throw new Error("Recipe API unavailable.");
             }
 
             const data = await response.json();
-            const meals = (data.meals || []).slice(0, 3);
 
-            if (!meals.length) {
-                status.textContent = "No matching recipes found.";
+            const meals = Array.isArray(data.meals)
+                ? data.meals.slice(0, 3)
+                : [];
+
+            if (meals.length === 0) {
+                status.textContent =
+                    "No matching recipes found.";
                 return;
             }
 
             status.textContent =
-                `Showing ${meals.length} recipes.`;
+                `Showing ${meals.length} recipes from TheMealDB.`;
 
             meals.forEach(meal => {
                 const card = document.createElement("article");
                 card.className = "card p-3 api-meal";
 
                 const image = document.createElement("img");
-                image.src = meal.strMealThumb;
-                image.alt = meal.strMeal;
+
+                image.src =
+                    meal.strMealThumb || createImageFallback();
+
+                image.alt =
+                    meal.strMeal || "Recipe image";
+
                 image.loading = "lazy";
                 image.decoding = "async";
                 image.className = "recipe-image mb-3";
 
+                image.addEventListener(
+                    "error",
+                    function () {
+                        if (this.dataset.fallbackUsed) return;
+
+                        this.dataset.fallbackUsed = "true";
+                        this.src = createImageFallback();
+                    }
+                );
+
                 const title = document.createElement("h3");
                 title.className = "h5";
-                title.textContent = meal.strMeal;
+                title.textContent =
+                    meal.strMeal || "Unnamed dish";
 
                 const country = document.createElement("p");
                 country.textContent =
                     `${meal.strArea || "International"} cuisine`;
 
                 const description = document.createElement("p");
-                description.textContent =
-                    (meal.strInstructions || "").slice(0, 450) + "...";
 
-                card.append(image, title, country, description);
+                const instructions =
+                    meal.strInstructions ||
+                    "No instructions available.";
+
+                description.textContent =
+                    instructions.length > 450
+                        ? instructions.slice(0, 450) + "..."
+                        : instructions;
+
+                card.append(
+                    image,
+                    title,
+                    country,
+                    description
+                );
+
                 results.append(card);
             });
-        } catch {
+
+        } catch (error) {
+            console.error("TheMealDB error:", error);
+
             status.textContent =
-                "Could not load recipes. Try again.";
+                "Could not load recipes. Check your connection and try again.";
+
         } finally {
-            button.disabled = false;
+            if (button) {
+                button.disabled = false;
+            }
         }
     });
 }
 
-// 12. IMAGE LAZY LOADING
+// ==========================================
+// 15. IMAGE LAZY LOADING
+// ==========================================
+
+function createImageFallback() {
+    const svg =
+        '<svg xmlns="http://www.w3.org/2000/svg" ' +
+        'width="600" height="400">' +
+        '<rect width="100%" height="100%" fill="#e7e2da"/>' +
+        '<text x="50%" y="50%" text-anchor="middle" ' +
+        'font-family="Arial" font-size="24" fill="#555">' +
+        'Image unavailable</text>' +
+        '</svg>';
+
+    return "data:image/svg+xml;charset=UTF-8," +
+        encodeURIComponent(svg);
+}
+
 function initLazyImages() {
-    const fallback =
-        "data:image/svg+xml;charset=UTF-8," +
-        encodeURIComponent(
-            '<svg xmlns="http://www.w3.org/2000/svg" ' +
-            'width="600" height="400">' +
-            '<rect width="100%" height="100%" fill="#e7e2da"/>' +
-            '<text x="50%" y="50%" text-anchor="middle" ' +
-            'font-size="24" fill="#555" font-family="Arial">' +
-            'Image unavailable</text></svg>'
-        );
+    const fallback = createImageFallback();
 
     function loadImage(image) {
         if (!image.dataset.src) return;
 
-        image.src = image.dataset.src;
-        image.removeAttribute("data-src");
-    }
+        const realSrc = image.dataset.src;
 
-    const images = document.querySelectorAll("img");
+        image.removeAttribute("data-src");
+        image.src = realSrc;
+    }
 
     let observer = null;
 
     if ("IntersectionObserver" in window) {
-        observer = new IntersectionObserver(entries => {
-            entries.forEach(entry => {
-                if (!entry.isIntersecting) return;
+        observer = new IntersectionObserver(
+            function (entries) {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
 
-                loadImage(entry.target);
-                observer.unobserve(entry.target);
-            });
-        }, {
-            rootMargin: "250px 0px"
-        });
+                    loadImage(entry.target);
+                    observer.unobserve(entry.target);
+                });
+            },
+            {
+                rootMargin: "250px 0px",
+                threshold: 0.01
+            }
+        );
     }
 
-    images.forEach(image => {
-        image.addEventListener("error", function () {
-            if (this.dataset.fallbackUsed) return;
+    document.querySelectorAll("img").forEach(image => {
 
-            this.dataset.fallbackUsed = "true";
-            this.src = fallback;
-        });
+        // Replace broken images with a local SVG data URL
+        function showFallback() {
+            if (image.dataset.fallbackUsed) return;
 
+            image.dataset.fallbackUsed = "true";
+            image.src = fallback;
+        }
+
+        image.addEventListener("error", showFallback);
+
+        // Support old HTML images with data-src
         if (image.dataset.src) {
             image.src = fallback;
 
@@ -909,11 +1394,35 @@ function initLazyImages() {
             } else {
                 loadImage(image);
             }
+
+            return;
+        }
+
+        // Native browser lazy loading
+        const isHero = image.classList.contains("hero-image");
+
+        const isFirstCarousel =
+            Boolean(image.closest(".carousel-item.active"));
+
+        if (isHero || isFirstCarousel) {
+            image.loading = "eager";
+        } else if (!image.hasAttribute("loading")) {
+            image.loading = "lazy";
+        }
+
+        image.decoding = "async";
+
+        // Handle images that failed before JS initialized
+        if (image.complete && image.naturalWidth === 0) {
+            showFallback();
         }
     });
 }
 
-// 13. SCROLL PROGRESS AND COUNTERS
+// ==========================================
+// 16. SCROLL PROGRESS
+// ==========================================
+
 function initScroll() {
     function updateProgress() {
         const max =
@@ -921,7 +1430,9 @@ function initScroll() {
             window.innerHeight;
 
         const progress = max > 0
-            ? Math.round(window.scrollY / max * 100)
+            ? Math.round(
+                (window.scrollY / max) * 100
+            )
             : 100;
 
         $("#scrollProgress")
@@ -929,28 +1440,37 @@ function initScroll() {
             .attr("aria-valuenow", progress);
     }
 
-    window.addEventListener("scroll", updateProgress, {
-        passive: true
-    });
+    window.addEventListener(
+        "scroll",
+        updateProgress,
+        { passive: true }
+    );
 
-    window.addEventListener("resize", updateProgress);
+    window.addEventListener(
+        "resize",
+        updateProgress
+    );
 
     updateProgress();
 
+    // Animated statistics
     function animateCounter(element) {
         if (element.dataset.started) return;
 
         element.dataset.started = "true";
 
-        const target = Number(element.dataset.target) || 0;
+        const target =
+            Number(element.dataset.target) || 0;
 
         $({ value: 0 }).animate(
             { value: target },
             {
                 duration: 1400,
+
                 step(value) {
                     element.textContent = Math.floor(value);
                 },
+
                 complete() {
                     element.textContent = target;
                 }
@@ -958,19 +1478,25 @@ function initScroll() {
         );
     }
 
-    const counters = document.querySelectorAll(".counter");
+    const counters =
+        document.querySelectorAll(".counter");
 
     if ("IntersectionObserver" in window) {
-        const observer = new IntersectionObserver(entries => {
-            entries.forEach(entry => {
-                if (!entry.isIntersecting) return;
+        const observer = new IntersectionObserver(
+            function (entries) {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
 
-                animateCounter(entry.target);
-                observer.unobserve(entry.target);
-            });
+                    animateCounter(entry.target);
+                    observer.unobserve(entry.target);
+                });
+            }
+        );
+
+        counters.forEach(counter => {
+            observer.observe(counter);
         });
 
-        counters.forEach(counter => observer.observe(counter));
     } else {
         counters.forEach(animateCounter);
     }

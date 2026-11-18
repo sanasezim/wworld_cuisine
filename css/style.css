@@ -833,3 +833,203 @@ body.night .form-success {
         animation: none;
     }
 }
+
+/* Final Project Improvements */
+
+/* Global responsiveness */
+body {
+    min-width: 320px;
+    overflow-x: clip;
+}
+
+img {
+    max-width: 100%;
+}
+
+.card,
+.recipe-box,
+.form-box {
+    min-width: 0;
+}
+
+/* Form validation */
+.field-error {
+    color: #b42318;
+    font-size: 0.85rem;
+    margin-top: 5px;
+}
+
+.field-error:empty {
+    display: none;
+}
+
+.form-error {
+    color: #b42318 !important;
+}
+
+.form-control.is-invalid,
+.form-select.is-invalid {
+    border-color: #b42318;
+}
+
+.form-control.is-invalid:focus,
+.form-select.is-invalid:focus {
+    box-shadow: 0 0 0 3px #b4231825;
+}
+
+/* Profile page */
+.profile-details {
+    margin: 24px 0;
+    padding: 24px;
+    background: var(--background);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow-wrap: anywhere;
+}
+
+.profile-details p {
+    margin-bottom: 12px;
+}
+
+.profile-details strong {
+    color: var(--text);
+}
+
+/* API recipe results */
+.api-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    margin-top: 20px;
+}
+
+.api-meal {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.api-meal .recipe-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+}
+
+.api-meal p {
+    line-height: 1.5;
+    font-size: 0.9rem;
+}
+
+#apiStatus {
+    font-weight: 500;
+}
+
+/* Accessible focus indicators */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 3px solid var(--accent);
+    outline-offset: 3px;
+}
+
+/* Night mode fixes */
+body.night .form-error,
+body.night .field-error {
+    color: #ff9999 !important;
+}
+
+body.night .form-text {
+    color: #b8b9b3;
+}
+
+body.night .form-control,
+body.night .form-select {
+    background-color: #2a2c33;
+    color: #ececea;
+    border-color: #555862;
+}
+
+body.night .form-control::placeholder {
+    color: #b8b9b3;
+}
+
+body.night .btn-outline-dark:hover {
+    color: #15161a;
+    background-color: #ececea;
+    border-color: #ececea;
+}
+
+body.night .profile-details {
+    background-color: #15161a;
+}
+
+/* Tablet */
+@media (max-width: 991px) {
+    .api-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .hero-title {
+        font-size: clamp(2rem, 5vw, 3.2rem);
+    }
+}
+
+/* Mobile */
+@media (max-width: 575px) {
+    .api-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .api-meal .recipe-image {
+        height: 220px;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .btn-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .btn-group > .btn {
+        margin-left: 0 !important;
+        border-radius: 22px !important;
+    }
+
+    .form-box {
+        padding: 20px !important;
+    }
+
+    .profile-details {
+        padding: 16px;
+    }
+
+    #notification {
+        left: 16px;
+        right: 16px;
+        bottom: 16px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 3px solid #ff9800 !important;
+    outline-offset: 4px;
+}
