@@ -1501,3 +1501,51 @@ function initScroll() {
         counters.forEach(animateCounter);
     }
 }
+
+ // Button click sound - Recipes page
+$(function () {
+    if (!$(".recipe-box").length) return;
+
+    let audioContext;
+
+    $(document).on("click", "button", function () {
+        const AudioContextClass =
+            window.AudioContext || window.webkitAudioContext;
+
+        if (!AudioContextClass) return;
+
+        try {
+            if (!audioContext) {
+                audioContext = new AudioContextClass();
+            }
+
+            if (audioContext.state === "suspended") {
+                audioContext.resume();
+            }
+
+            const oscillator = audioContext.createOscillator();
+            const volume = audioContext.createGain();
+            const now = audioContext.currentTime;
+
+            oscillator.type = "sine";
+
+            oscillator.frequency.setValueAtTime(650, now);
+            oscillator.frequency.exponentialRampToValueAtTime(
+                450, now + 0.08
+            );
+
+            volume.gain.setValueAtTime(0.08, now);
+            volume.gain.exponentialRampToValueAtTime(
+                0.001, now + 0.08
+            );
+
+            oscillator.connect(volume);
+            volume.connect(audioContext.destination);
+
+            oscillator.start(now);
+            oscillator.stop(now + 0.08);
+        } catch (error) {
+            console.error("Sound error:", error);
+        }
+    });
+});
